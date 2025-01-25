@@ -3,20 +3,6 @@ const Course = require('./models/Course');
 const User = require('./models/user');
 const Log = require('./models/Log');
 
-const logAction = async (action, userId, details) => {
-  try {
-    await Log.create({
-      action,
-      userId,
-      details,
-    });
-    console.log(`Logged action: ${action}`);
-  } catch (error) {
-    console.error(`Error logging action: ${error.message}`);
-  }
-};
-
-
 
 module.exports = (bot) => {
   // Handle /start command
@@ -344,20 +330,30 @@ module.exports = (bot) => {
   });
   
 
-  const logAction = async (action, userId, details) => {
-    try {
-      await Log.create({ action, userId, details });
-    } catch (error) {
-      console.error(`Error logging action: ${error.message}`);
-    }
-  };
-  
-  // Log interactions
   bot.on('message', async (msg) => {
-    const { id, username } = msg.chat;
-    logAction('message_received', id, `Message from ${username}: ${msg.text}`);
+    const chatId = msg.chat.id;
+  
+    try {
+      const user = await User.findOne({ telegramId: chatId });
+      if (!user) {
+        await User.create({
+          telegramId: chatId,
+          username: msg.chat.username || '',
+          firstName: msg.chat.first_name || '',
+          lastName: msg.chat.last_name || '',
+        });
+      }
+  
+      // Log user interaction
+      await Log.create({
+        action: msg.text,
+        userId: chatId,
+      });
+    } catch (error) {
+      console.error(`⚠️ Failed to log user engagement: ${error.message}`);
+    }
   });
-
+  
   
   bot.onText(/\/addadmin (\d+)/, async (msg, match) => {
     const chatId = msg.chat.id;
@@ -418,6 +414,256 @@ module.exports = (bot) => {
   
     bot.sendMessage(chatId, `📊 User Stats:\n- Total Users: ${userCount}\n- Quizzes Attempted: ${quizAttempts[0]?.total || 0}`);
   });
+
+  bot.onText(/\/submitquiz (\d+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const quizId = match[1];
+  
+    try {
+      const user = await User.findOne({ telegramId: chatId });
+      if (!user) {
+        return bot.sendMessage(chatId, `⚠️ You are not registered. Use /start to register.`);
+      }
+  
+      const quiz = await Quiz.findById(quizId);
+      if (!quiz) {
+        return bot.sendMessage(chatId, `⚠️ Quiz not found.`);
+      }
+  
+      const score = Math.floor(Math.random() * 100); // Simulating score calculation
+  
+      // Update user progress
+      const existingQuizProgress = user.progress.quizzes.find((q) => q.quizId.toString() === quizId);
+      if (existingQuizProgress) {
+        existingQuizProgress.completed = true;
+        existingQuizProgress.score = score;
+      } else {
+        user.progress.quizzes.push({ quizId, completed: true, score });
+      }
+  
+      await user.save();
+  
+      bot.sendMessage(chatId, `✅ Quiz completed! Your score: ${score}`);
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, `⚠️ Failed to submit quiz progress.`);
+    }
+  });
+
+  //course progess
+
+  bot.onText(/\/startcourse (\d+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const courseId = match[1];
+  
+    try {
+      const user = await User.findOne({ telegramId: chatId });
+      if (!user) {
+        return bot.sendMessage(chatId, `⚠️ You need to register first.`);
+      }
+  
+      const course = await Course.findById(courseId);
+      if (!course) {
+        return bot.sendMessage(chatId, `⚠️ Course not found.`);
+      }
+  
+      const courseProgress = user.progress.courses.find(
+        (c) => c.courseId.toString() === courseId
+      );
+      if (courseProgress) {
+        return bot.sendMessage(chatId, `📘 You are already enrolled in this course.`);
+      }
+  
+      user.progress.courses.push({ courseId, completedModules: [] });
+      await user.save();
+  
+      bot.sendMessage(chatId, `✅ You have started the course: ${course.title}`);
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, `⚠️ Failed to start the course.`);
+    }
+  });
+  
+
+  bot.onText(/\/completeModule (\d+)/, async (msg, match) => {
+    const chatId = msg.chat.id;
+    const moduleNumber = parseInt(match[1]);
+  
+    try {
+      const user = await User.findOne({ telegramId: chatId });
+      if (!user) {
+        return bot.sendMessage(chatId, `⚠️ You need to register first.`);
+      }
+  
+      const courseProgress = user.progress.courses.find(
+        (c) => c.completedModules.includes(moduleNumber) === false
+      );
+  
+      if (!courseProgress) {
+        return bot.sendMessage(
+          chatId,
+          `⚠️ You are either not enrolled in a course or the module is already completed.`
+        );
+      }
+  
+      courseProgress.completedModules.push(moduleNumber);
+      const course = await Course.findById(courseProgress.courseId);
+  
+      if (
+        courseProgress.completedModules.length === course.content.length &&
+        !courseProgress.completed
+      ) {
+        courseProgress.completed = true;
+        bot.sendMessage(chatId, `🎉 Congratulations! You have completed the course: ${course.title}`);
+      }
+  
+      await user.save();
+      bot.sendMessage(chatId, `✅ Module ${moduleNumber} marked as completed.`);
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, `⚠️ Failed to complete the module.`);
+    }
+  });
+
+  
+  // list all users
+  bot.onText(/\/listusers/, async (msg) => {
+    const chatId = msg.chat.id;
+  
+    try {
+      const admin = await User.findOne({ telegramId: chatId });
+      if (!admin || !admin.isAdmin) {
+        return bot.sendMessage(chatId, `⚠️ You do not have admin privileges.`);
+      }
+  
+      const users = await User.find();
+      if (users.length === 0) {
+        return bot.sendMessage(chatId, `No users are currently registered.`);
+      }
+  
+      const userList = users
+        .map((user, index) => `${index + 1}. ${user.username || user.telegramId}`)
+        .join('\n');
+      bot.sendMessage(chatId, `📋 Registered Users:\n${userList}`);
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, `⚠️ Failed to retrieve users.`);
+    }
+  });
+
+  
+  // view logs 
+  bot.onText(/\/viewlogs/, async (msg) => {
+    const chatId = msg.chat.id;
+  
+    try {
+      const admin = await User.findOne({ telegramId: chatId });
+      if (!admin || !admin.isAdmin) {
+        return bot.sendMessage(chatId, `⚠️ You do not have admin privileges.`);
+      }
+  
+      const logs = await Log.find().sort({ createdAt: -1 }).limit(50);
+      if (logs.length === 0) {
+        return bot.sendMessage(chatId, `No logs found.`);
+      }
+  
+      const logList = logs
+        .map((log) => `${log.action} - ${new Date(log.createdAt).toLocaleString()}`)
+        .join('\n');
+      bot.sendMessage(chatId, `📜 Logs:\n${logList}`);
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, `⚠️ Failed to retrieve logs.`);
+    }
+  });
+  
+  //*************** code for user registration */
+
+  // Handle /register command
+bot.onText(/\/register/, async (msg) => {
+  const chatId = msg.chat.id;
+
+  try {
+    // Check if user is already registered
+    const existingUser = await User.findOne({ telegramId: chatId });
+    if (existingUser) {
+      return bot.sendMessage(chatId, `📋 You are already registered as ${existingUser.username || 'a user'}.`);
+    }
+
+    // Create a new user
+    const newUser = new User({
+      telegramId: chatId,
+      username: msg.from.username || '',
+      firstName: msg.from.first_name || '',
+      lastName: msg.from.last_name || '',
+    });
+
+    await newUser.save();
+    bot.sendMessage(chatId, `✅ Registration successful! Welcome, ${msg.from.first_name || 'User'}.`);
+  } catch (error) {
+    console.error(error);
+    bot.sendMessage(chatId, `⚠️ Failed to register. Please try again later.`);
+  }
+});
+
+
+
+// ?  view profile 
+
+// Handle /profile command
+bot.onText(/\/profile/, async (msg) => {
+  const chatId = msg.chat.id;
+
+  try {
+    // Find user by telegramId
+    const user = await User.findOne({ telegramId: chatId });
+    if (!user) {
+      return bot.sendMessage(chatId, `⚠️ You are not registered. Use /register to create an account.`);
+    }
+
+    // Prepare profile message
+    const profileMessage = `
+👤 *Your Profile:*
+- Username: ${user.username || 'Not set'}
+- Name: ${user.firstName || 'Not set'} ${user.lastName || ''}
+- Progress:
+  *Quizzes Completed*: ${user.progress?.quizzes?.filter(q => q.completed).length || 0}
+  *Courses Completed*: ${user.progress?.courses?.filter(c => c.completedModules.length).length || 0}
+`;
+
+    bot.sendMessage(chatId, profileMessage, { parse_mode: 'Markdown' });
+  } catch (error) {
+    console.error(error);
+    bot.sendMessage(chatId, `⚠️ Failed to fetch profile. Please try again later.`);
+  }
+});
+
+
+//todo edit profile
+
+// Handle /editprofile command
+bot.onText(/\/editprofile (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const newUsername = match[1].trim();
+
+  try {
+    const user = await User.findOne({ telegramId: chatId });
+    if (!user) {
+      return bot.sendMessage(chatId, `⚠️ You are not registered. Use /register to create an account.`);
+    }
+
+    user.username = newUsername;
+    await user.save();
+
+    bot.sendMessage(chatId, `✅ Your profile has been updated. New username: ${newUsername}`);
+  } catch (error) {
+    console.error(error);
+    bot.sendMessage(chatId, `⚠️ Failed to update profile. Please try again later.`);
+  }
+});
+
+
+
   
   console.log('Bot commands are set up.');
 };
