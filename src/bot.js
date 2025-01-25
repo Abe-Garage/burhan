@@ -75,7 +75,7 @@ module.exports = (bot) => {
       }
     });
 
-    bot.sendPoll(message.chat.id, quizQuestion.question, quizQuestion.options, {
+    bot.sendPoll(chatId, quizQuestion.question, quizQuestion.options, {
       is_anonymous: false,  // Makes the poll public
       type: "quiz",  // Marks the poll as a quiz
       correct_option_id: quizQuestion.correctAnswerIndex,  // Correct answer index
