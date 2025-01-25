@@ -21,14 +21,19 @@ module.exports = (bot) => {
   // Handle /start command
   bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
-    const welcomeMessage = `👋 Welcome to **Burhan School** _Bot!_\n\n🚀 Use this bot to enhance your skills by exploring quizzes, courses, and more.`;
+
+    const welcomeMessage = `👋 Welcome to <b>Burhan School</b> <i>Bot!</i>\n\n🚀 Use this bot to enhance your skills by exploring quizzes, courses, and more.`;
+
+      bot.sendMessage(chatId, welcomeMessage, { parse_mode: 'HTML' });
+  
+    // const welcomeMessage = `👋 Welcome to **Burhan School** _Bot!_\n\n🚀 Use this bot to enhance your skills by exploring quizzes, courses, and more.`;
 
     bot.sendPoll(chatId, "Do you like math?", ["Yes", "No"]);
     bot.sendPoll(chatId, "Do you like science?", ["Yes", "No"]);
     bot.sendPoll(chatId, "Do you like history?", ["Yes", "No"]);
 
 
-    bot.sendMessage(chatId, welcomeMessage);
+    // bot.sendMessage(chatId, welcomeMessage);
   });
 
   // Handle /quizzes command
