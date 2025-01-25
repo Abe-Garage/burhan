@@ -23,6 +23,11 @@ module.exports = (bot) => {
     const chatId = msg.chat.id;
     const welcomeMessage = `👋 Welcome to **Burhan School** _Bot!_\n\n🚀 Use this bot to enhance your skills by exploring quizzes, courses, and more.`;
 
+    bot.sendPoll(chatId, "Do you like math?", ["Yes", "No"]);
+    bot.sendPoll(chatId, "Do you like science?", ["Yes", "No"]);
+    bot.sendPoll(chatId, "Do you like history?", ["Yes", "No"]);
+
+
     bot.sendMessage(chatId, welcomeMessage);
   });
 
