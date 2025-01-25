@@ -28,9 +28,30 @@ module.exports = (bot) => {
   
     // const welcomeMessage = `👋 Welcome to **Burhan School** _Bot!_\n\n🚀 Use this bot to enhance your skills by exploring quizzes, courses, and more.`;
 
-    bot.sendPoll(chatId, "Do you like math?", ["Yes", "No"]);
-    bot.sendPoll(chatId, "Do you like science?", ["Yes", "No"]);
-    bot.sendPoll(chatId, "Do you like history?", ["Yes", "No"]);
+    bot.sendPoll(chatId, "What is JSX in React?", ["JavaScript XML", "JavaScript Extension", "JSON XML", "JavaScript Expression"], {
+      is_anonymous: true,
+      allows_multiple_answers: false,
+      show_poll_results: false
+    });
+    
+    bot.sendPoll(chatId, "Which hook is used to manage state in a functional component?", ["useEffect", "useState", "useContext", "useReducer"], {
+      is_anonymous: true,
+      allows_multiple_answers: false,
+      show_poll_results: false
+    });
+    
+    bot.sendPoll(chatId, "What does the 'props' object in React represent?", ["Component state", "Component's method", "Component's properties", "Component's lifecycle"], {
+      is_anonymous: true,
+      allows_multiple_answers: false,
+      show_poll_results: false
+    });
+    
+    bot.sendPoll(chatId, "Which of the following is used to pass data between components in React?", ["useContext", "Props", "State", "useRef"], {
+      is_anonymous: true,
+      allows_multiple_answers: false,
+      show_poll_results: false
+    });
+    
 
 
     // bot.sendMessage(chatId, welcomeMessage);
