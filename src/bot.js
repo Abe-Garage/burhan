@@ -40,7 +40,7 @@ module.exports = (bot) => {
     // });
     
 
-    bot.sendMessage(chatId, "Which subject do you like?", {
+    bot.sendMessage(chatId, "<code> Which subject do you like? </code> ",{ parse_mode: 'HTML' }, {
       reply_markup: {
         inline_keyboard: [
           [{ text: "🔘 Math", callback_data: "Math" }],
