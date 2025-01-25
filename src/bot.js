@@ -17,18 +17,6 @@ const logAction = async (action, userId, details) => {
 };
 
 
-async function sendQuestion() {
-  const questionMessage = await bot.sendMessage(chatId, "Which subject do you like?", {
-    reply_markup: {
-      inline_keyboard: [
-        [{ text: "🔘 Math", callback_data: "Math" }],
-        [{ text: "🔘 Science", callback_data: "Science" }],
-        [{ text: "🔘 English", callback_data: "English" }],
-        [{ text: "🔘 History", callback_data: "History" }]
-      ]
-    }
-  });
-}
 
 module.exports = (bot) => {
   // Handle /start command
@@ -66,7 +54,16 @@ module.exports = (bot) => {
     });
     
 
-    sendQuestion()
+    bot.sendMessage(chatId, "Which subject do you like?", {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: "🔘 Math", callback_data: "Math" }],
+          [{ text: "🔘 Science", callback_data: "Science" }],
+          [{ text: "🔘 English", callback_data: "English" }],
+          [{ text: "🔘 History", callback_data: "History" }]
+        ]
+      }
+    });
     
 
 
