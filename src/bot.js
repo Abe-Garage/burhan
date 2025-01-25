@@ -36,44 +36,77 @@ module.exports = (bot) => {
     //   explanation: "Paris is the capital city of France, known for its landmarks like the Eiffel Tower."
     // };
 
-    const quizQuestions = [
+    // const quizQuestions = [
+    //   {
+    //     question: "What is the capital of France?",
+    //     options: ["Berlin", "Madrid", "Paris", "Rome"],
+    //     correctAnswerIndex: 2,
+    //     explanation: "Paris is the capital city of France."
+    //   },
+    //   {
+    //     question: "Which planet is known as the Red Planet?",
+    //     options: ["Earth", "Mars", "Venus", "Jupiter"],
+    //     correctAnswerIndex: 1,
+    //     explanation: "Mars is known as the Red Planet due to its reddish appearance."
+    //   },
+    //   {
+    //     question: "What is the largest ocean on Earth?",
+    //     options: ["Atlantic", "Indian", "Arctic", "Pacific"],
+    //     correctAnswerIndex: 3,
+    //     explanation: "The Pacific Ocean is the largest and deepest ocean on Earth."
+    //   },
+    //   {
+    //     question: "Who wrote 'Hamlet'?",
+    //     options: ["Shakespeare", "Dickens", "Austen", "Hemingway"],
+    //     correctAnswerIndex: 0,
+    //     explanation: "'Hamlet' was written by William Shakespeare."
+    //   },
+    //   {
+    //     question: "What is the speed of light?",
+    //     options: ["300,000 km/s", "150,000 km/s", "1,000,000 km/s", "100,000 km/s"],
+    //     correctAnswerIndex: 0,
+    //     explanation: "The speed of light in a vacuum is approximately 300,000 km/s."
+    //   },
+    //   {
+    //     question: "Which element is most abundant in the Earth's atmosphere?",
+    //     options: ["Oxygen", "Hydrogen", "Nitrogen", "Carbon Dioxide"],
+    //     correctAnswerIndex: 2,
+    //     explanation: "Nitrogen makes up about 78% of the Earth's atmosphere."
+    //   }
+    // ];
+
+    const enkokelesh =[
       {
-        question: "What is the capital of France?",
-        options: ["Berlin", "Madrid", "Paris", "Rome"],
+        question: "አንድ አይን ያላት ነገር ግን የማታይ?  ?",
+        options: ["እውር", "የሌሊት ወፍ", "መርፌ"],
         correctAnswerIndex: 2,
         explanation: "Paris is the capital city of France."
       },
       {
-        question: "Which planet is known as the Red Planet?",
-        options: ["Earth", "Mars", "Venus", "Jupiter"],
+        question: "ቢወረውሩት ወንዝ አይሻገር? ",
+        options: ["በረዶ", "ጥጥ", "አሎሎ"],
         correctAnswerIndex: 1,
         explanation: "Mars is known as the Red Planet due to its reddish appearance."
       },
       {
-        question: "What is the largest ocean on Earth?",
-        options: ["Atlantic", "Indian", "Arctic", "Pacific"],
-        correctAnswerIndex: 3,
+        question: "ሁለት ቅሎች ገደል ላይ ተንጠልጥለው?  ",
+        options: ["ጡት", "ዱባ", "ፓፓዬ"],
+        correctAnswerIndex:0,
         explanation: "The Pacific Ocean is the largest and deepest ocean on Earth."
       },
       {
-        question: "Who wrote 'Hamlet'?",
-        options: ["Shakespeare", "Dickens", "Austen", "Hemingway"],
+        question: "ትንሹ የማያድግ ትልቁ የማያረጅ?  ",
+        options: ["ድንጋይ", "ጉንዳን", "ኤሊ"],
         correctAnswerIndex: 0,
         explanation: "'Hamlet' was written by William Shakespeare."
       },
       {
-        question: "What is the speed of light?",
-        options: ["300,000 km/s", "150,000 km/s", "1,000,000 km/s", "100,000 km/s"],
+        question: "ገበያ ስትወታወታ ዝምተኛ  እሳት ሲነካት ምላሰኛ?  ",
+        options: ["ተልባ", "ኑግ", "ፍየል"],
         correctAnswerIndex: 0,
         explanation: "The speed of light in a vacuum is approximately 300,000 km/s."
       },
-      {
-        question: "Which element is most abundant in the Earth's atmosphere?",
-        options: ["Oxygen", "Hydrogen", "Nitrogen", "Carbon Dioxide"],
-        correctAnswerIndex: 2,
-        explanation: "Nitrogen makes up about 78% of the Earth's atmosphere."
-      }
-    ];
+    ]
     
 
       bot.sendMessage(chatId, welcomeMessage, { parse_mode: 'HTML' });
@@ -85,8 +118,8 @@ module.exports = (bot) => {
       //   explanation: quizQuestion.explanation  // Explanation after the user answers
       // })
 
-      for (let i = 0; i < quizQuestions.length; i++) {
-        const quizQuestion = quizQuestions[i];
+      for (let i = 0; i < enkokelesh.length; i++) {
+        const quizQuestion = enkokelesh[i];
   
         // Send each question one by one using sendPoll
         bot.sendPoll(chatId, quizQuestion.question, quizQuestion.options, {
@@ -126,17 +159,17 @@ module.exports = (bot) => {
     // });
     
 
-    bot.sendMessage(chatId, "<code>Which subject do you like?</code>", {
-      parse_mode: 'HTML',
-      reply_markup: {
-        inline_keyboard: [
-          [{ text: "🔘 Math", callback_data: "Math" }],
-          [{ text: "🔘 Science", callback_data: "Science" }],
-          [{ text: "🔘 English", callback_data: "English" }],
-          [{ text: "🔘 History", callback_data: "History" }]
-        ]
-      }
-    });
+    // bot.sendMessage(chatId, "<code>Which subject do you like?</code>", {
+    //   parse_mode: 'HTML',
+    //   reply_markup: {
+    //     inline_keyboard: [
+    //       [{ text: "🔘 Math", callback_data: "Math" }],
+    //       [{ text: "🔘 Science", callback_data: "Science" }],
+    //       [{ text: "🔘 English", callback_data: "English" }],
+    //       [{ text: "🔘 History", callback_data: "History" }]
+    //     ]
+    //   }
+    // });
 
     
     
