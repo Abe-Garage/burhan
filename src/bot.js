@@ -6,12 +6,7 @@ const Log = require('./models/Log');
 
 module.exports = (bot) => {
 
-  const quizQuestion = {
-    question: "What is the capital of France?",
-    options: ["Berlin", "Madrid", "Paris", "Rome"],
-    correctAnswerIndex: 2,  // Paris is the correct answer (index 2)
-    explanation: "Paris is the capital city of France, known for its landmarks like the Eiffel Tower."
-  };
+
   
   // Command to send quiz
   // bot.command("quiz", (message) => {
@@ -34,7 +29,22 @@ module.exports = (bot) => {
 
     const welcomeMessage = `👋 Welcome to <b>Burhan School</b> <i>Bot!</i>\n\n🚀 <code>Use this bot to enhance your skills by exploring quizzes, courses, and more.</code>`;
 
+    const quizQuestion = {
+      question: "What is the capital of France?",
+      options: ["Berlin", "Madrid", "Paris", "Rome"],
+      correctAnswerIndex: 2,  // Paris is the correct answer (index 2)
+      explanation: "Paris is the capital city of France, known for its landmarks like the Eiffel Tower."
+    };
+
       bot.sendMessage(chatId, welcomeMessage, { parse_mode: 'HTML' });
+
+      bot.sendPoll(chatId, quizQuestion.question, quizQuestion.options, {
+        is_anonymous: false,  // Makes the poll public
+        type: "quiz",  // Marks the poll as a quiz
+        correct_option_id: quizQuestion.correctAnswerIndex,  // Correct answer index
+        explanation: quizQuestion.explanation  // Explanation after the user answers
+      })
+      
   
     // const welcomeMessage = `👋 Welcome to **Burhan School** _Bot!_\n\n🚀 Use this bot to enhance your skills by exploring quizzes, courses, and more.`;
 
@@ -75,12 +85,6 @@ module.exports = (bot) => {
       }
     });
 
-    bot.sendPoll(chatId, quizQuestion.question, quizQuestion.options, {
-      is_anonymous: false,  // Makes the poll public
-      type: "quiz",  // Marks the poll as a quiz
-      correct_option_id: quizQuestion.correctAnswerIndex,  // Correct answer index
-      explanation: quizQuestion.explanation  // Explanation after the user answers
-    })
     
     
 
