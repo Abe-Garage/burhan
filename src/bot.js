@@ -17,6 +17,19 @@ const logAction = async (action, userId, details) => {
 };
 
 
+async function sendQuestion() {
+  const questionMessage = await bot.sendMessage(chatId, "Which subject do you like?", {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: "🔘 Math", callback_data: "Math" }],
+        [{ text: "🔘 Science", callback_data: "Science" }],
+        [{ text: "🔘 English", callback_data: "English" }],
+        [{ text: "🔘 History", callback_data: "History" }]
+      ]
+    }
+  });
+}
+
 module.exports = (bot) => {
   // Handle /start command
   bot.onText(/\/start/, (msg) => {
@@ -53,8 +66,28 @@ module.exports = (bot) => {
     });
     
 
+    sendQuestion()
+    
+
 
     // bot.sendMessage(chatId, welcomeMessage);
+  });
+
+  bot.on('callback_query', async (query) => {
+    const userChoice = query.data;
+  
+    // Update the buttons to reflect the selected answer
+    const options = ["Math", "Science", "English", "History"];
+    const updatedKeyboard = options.map(option => [
+      { text: userChoice === option ? `✅ ${option}` : `🔘 ${option}`, callback_data: option }
+    ]);
+  
+    await bot.editMessageReplyMarkup({ inline_keyboard: updatedKeyboard }, {
+      chat_id: query.message.chat.id,
+      message_id: query.message.message_id
+    });
+  
+    await bot.answerCallbackQuery(query.id, { text: `You selected: ${userChoice}` });
   });
 
   // Handle /quizzes command
