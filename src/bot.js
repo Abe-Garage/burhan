@@ -5,6 +5,29 @@ const Log = require('./models/Log');
 
 
 module.exports = (bot) => {
+
+  const quizQuestion = {
+    question: "What is the capital of France?",
+    options: ["Berlin", "Madrid", "Paris", "Rome"],
+    correctAnswerIndex: 2,  // Paris is the correct answer (index 2)
+    explanation: "Paris is the capital city of France, known for its landmarks like the Eiffel Tower."
+  };
+  
+  // Command to send quiz
+  // bot.command("quiz", (message) => {
+  //   try {
+  //     // Send quiz using sendPoll
+  //     bot.sendPoll(message.chat.id, quizQuestion.question, quizQuestion.options, {
+  //       is_anonymous: false,  // Makes the poll public
+  //       type: "quiz",  // Marks the poll as a quiz
+  //       correct_option_id: quizQuestion.correctAnswerIndex,  // Correct answer index
+  //       explanation: quizQuestion.explanation  // Explanation after the user answers
+  //     });
+  //   } catch (err) {
+  //     console.error(err);
+  //     bot.sendMessage(message.chat.id, "Sorry, something went wrong while fetching the quiz.");
+  //   }
+  // });
   // Handle /start command
   bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
@@ -51,6 +74,13 @@ module.exports = (bot) => {
         ]
       }
     });
+
+    bot.sendPoll(message.chat.id, quizQuestion.question, quizQuestion.options, {
+      is_anonymous: false,  // Makes the poll public
+      type: "quiz",  // Marks the poll as a quiz
+      correct_option_id: quizQuestion.correctAnswerIndex,  // Correct answer index
+      explanation: quizQuestion.explanation  // Explanation after the user answers
+    })
     
     
 
