@@ -1,6 +1,6 @@
 const Quiz = require('./models/Quiz');
 const Course = require('./models/Course');
-const User = require('./models/User');
+const User = require('./models/user');
 const Log = require('./models/Log');
 
 const logAction = async (action, userId, details) => {
