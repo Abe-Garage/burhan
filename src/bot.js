@@ -23,35 +23,35 @@ module.exports = (bot) => {
   bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
 
-    const welcomeMessage = `👋 Welcome to <b>Burhan School</b> <i>Bot!</i>\n\n🚀 Use this bot to enhance your skills by exploring quizzes, courses, and more.`;
+    const welcomeMessage = `👋 Welcome to <b>Burhan School</b> <i>Bot!</i>\n\n🚀 <code>Use this bot to enhance your skills by exploring quizzes, courses, and more.</code>`;
 
       bot.sendMessage(chatId, welcomeMessage, { parse_mode: 'HTML' });
   
     // const welcomeMessage = `👋 Welcome to **Burhan School** _Bot!_\n\n🚀 Use this bot to enhance your skills by exploring quizzes, courses, and more.`;
 
-    bot.sendPoll(chatId, "What is JSX in React?", ["JavaScript XML", "JavaScript Extension", "JSON XML", "JavaScript Expression"], {
-      is_anonymous: true,
-      allows_multiple_answers: false,
-      show_poll_results: false
-    });
+    // bot.sendPoll(chatId, "What is JSX in React?", ["JavaScript XML", "JavaScript Extension", "JSON XML", "JavaScript Expression"], {
+    //   is_anonymous: true,
+    //   allows_multiple_answers: false,
+    //   show_poll_results: false
+    // });
     
-    bot.sendPoll(chatId, "Which hook is used to manage state in a functional component?", ["useEffect", "useState", "useContext", "useReducer"], {
-      is_anonymous: true,
-      allows_multiple_answers: false,
-      show_poll_results: false
-    });
+    // bot.sendPoll(chatId, "Which hook is used to manage state in a functional component?", ["useEffect", "useState", "useContext", "useReducer"], {
+    //   is_anonymous: true,
+    //   allows_multiple_answers: false,
+    //   show_poll_results: false
+    // });
     
-    bot.sendPoll(chatId, "What does the 'props' object in React represent?", ["Component state", "Component's method", "Component's properties", "Component's lifecycle"], {
-      is_anonymous: true,
-      allows_multiple_answers: false,
-      show_poll_results: false
-    });
+    // bot.sendPoll(chatId, "What does the 'props' object in React represent?", ["Component state", "Component's method", "Component's properties", "Component's lifecycle"], {
+    //   is_anonymous: true,
+    //   allows_multiple_answers: false,
+    //   show_poll_results: false
+    // });
     
-    bot.sendPoll(chatId, "Which of the following is used to pass data between components in React?", ["useContext", "Props", "State", "useRef"], {
-      is_anonymous: true,
-      allows_multiple_answers: false,
-      show_poll_results: false
-    });
+    // bot.sendPoll(chatId, "Which of the following is used to pass data between components in React?", ["useContext", "Props", "State", "useRef"], {
+    //   is_anonymous: true,
+    //   allows_multiple_answers: false,
+    //   show_poll_results: false
+    // });
     
 
     bot.sendMessage(chatId, "Which subject do you like?", {
