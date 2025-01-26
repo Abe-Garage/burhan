@@ -183,19 +183,67 @@ module.exports = (bot) => {
             `- ${course.courseId.title}: Completed Modules (${course.completedModules.length})`
         ).join('\n') || 'No courses started.';
   
-        const reportMessage = `
-  📋 User Report:
-  👤 Name: ${user.firstName || 'N/A'} ${user.lastName || ''}
-  🆔 Telegram ID: ${user.telegramId}
+  //       const reportMessage = `
+  // 📋 User Report:
+  // 👤 Name: ${user.firstName || 'N/A'} ${user.lastName || ''}
+  // 🆔 Telegram ID: ${user.telegramId}
   
-  📊 Quizzes:
-  ${quizReport}
+  // 📊 Quizzes:
+  // ${quizReport}
   
-  📚 Courses:
-  ${courseReport}
-  `;
+  // 📚 Courses:
+  // ${courseReport}
+  // `;
   
-        bot.sendMessage(chatId, reportMessage);
+  //       bot.sendMessage(chatId, reportMessage);
+
+  // Generating the data for the charts (Pie chart example)
+  const quizzesAttempted = user.progress?.quizzes.filter(quiz => quiz.completed).length;
+  const coursesStarted = user.progress?.courses.filter(course => course.completedModules.length > 0).length;
+  
+  const currentDate = new Date();
+const formattedDate = currentDate.toLocaleDateString('en-US', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+
+  const chartUrl = `https://quickchart.io/chart?c={
+    type: 'pie',
+    data: {
+      labels: ['Quizzes Attempted', 'Courses Started'],
+      datasets: [{
+        data: [${quizzesAttempted}, ${coursesStarted}],
+        backgroundColor: ['#3498db', '#2ecc71']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'top' }
+      }
+    }
+  }`;
+
+  // Prepare the formatted table
+  const table = `
+*📋 User Report:*
+
+| *Field*              | *Data*              |
+|----------------------|---------------------|
+| 👤 *Name*            | ${user.firstName || 'N/A'} ${user.lastName || ''} |
+| 🆔 *Telegram ID*     | ${user.telegramId}  |
+| 📊 *Quizzes*         | ${quizReport}       |
+| 📚 *Courses*         | ${courseReport}     |
+
+---
+
+🔄 *Last Updated:* ${formattedDate}
+`;
+
+  // Sending the report, chart, and table
+  bot.sendMessage(chatId, table, { parse_mode: 'Markdown' });
+  bot.sendPhoto(chatId, chartUrl);
       } catch (error) {
         console.error(error);
         bot.sendMessage(chatId, `⚠️ Failed to generate user report.`);
