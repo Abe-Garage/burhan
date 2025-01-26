@@ -9,6 +9,7 @@ const fs = require('fs')
 const { createCanvas } = require('canvas');
 const { Chart, registerables } = require('chart.js');  // Import necessary components
 Chart.register(...registerables);  // Registe
+const cliProgress = require('cli-progress');
 
 module.exports = (bot) => {
     // View stats
@@ -160,112 +161,184 @@ module.exports = (bot) => {
       }
     });
 
-    bot.onText(/\/userreport (\d+)/, async (msg, match) => {
-      const chatId = msg.chat.id;
-      const targetTelegramId = match[1];
+//     bot.onText(/\/userreport (\d+)/, async (msg, match) => {
+//       const chatId = msg.chat.id;
+//       const targetTelegramId = match[1];
   
-      try {
-        const admin = await User.findOne({ telegramId: chatId });
-        if (!admin || !admin.isAdmin) {
-          return bot.sendMessage(chatId, `⚠️ You do not have admin privileges.`);
-        }
+//       try {
+//         const admin = await User.findOne({ telegramId: chatId });
+//         if (!admin || !admin.isAdmin) {
+//           return bot.sendMessage(chatId, `⚠️ You do not have admin privileges.`);
+//         }
   
-        const user = await User.findOne({ telegramId: targetTelegramId }).populate('progress.quizzes.quizId progress.courses.courseId');
-        if (!user) {
-          return bot.sendMessage(chatId, `⚠️ User not found.`);
-        }
+//         const user = await User.findOne({ telegramId: targetTelegramId }).populate('progress.quizzes.quizId progress.courses.courseId');
+//         if (!user) {
+//           return bot.sendMessage(chatId, `⚠️ User not found.`);
+//         }
   
-        const quizReport = user.progress.quizzes.map(
-          (quiz) =>
-            `- ${quiz.quizId.title}: ${quiz.completed ? `✅ Completed (Score: ${quiz.score})` : `❌ Not Completed`}`
-        ).join('\n') || 'No quizzes attempted.';
+//         const quizReport = user.progress.quizzes.map(
+//           (quiz) =>
+//             `- ${quiz.quizId.title}: ${quiz.completed ? `✅ Completed (Score: ${quiz.score})` : `❌ Not Completed`}`
+//         ).join('\n') || 'No quizzes attempted.';
   
-        const courseReport = user.progress.courses.map(
-          (course) =>
-            `- ${course.courseId.title}: Completed Modules (${course.completedModules.length})`
-        ).join('\n') || 'No courses started.';
+//         const courseReport = user.progress.courses.map(
+//           (course) =>
+//             `- ${course.courseId.title}: Completed Modules (${course.completedModules.length})`
+//         ).join('\n') || 'No courses started.';
   
-  //       const reportMessage = `
-  // 📋 User Report:
-  // 👤 Name: ${user.firstName || 'N/A'} ${user.lastName || ''}
-  // 🆔 Telegram ID: ${user.telegramId}
+//   //       const reportMessage = `
+//   // 📋 User Report:
+//   // 👤 Name: ${user.firstName || 'N/A'} ${user.lastName || ''}
+//   // 🆔 Telegram ID: ${user.telegramId}
   
-  // 📊 Quizzes:
-  // ${quizReport}
+//   // 📊 Quizzes:
+//   // ${quizReport}
   
-  // 📚 Courses:
-  // ${courseReport}
-  // `;
+//   // 📚 Courses:
+//   // ${courseReport}
+//   // `;
   
-  //       bot.sendMessage(chatId, reportMessage);
+//   //       bot.sendMessage(chatId, reportMessage);
 
-  // Generating the data for the charts (Pie chart example)
-  const quizzesAttempted = user.progress?.quizzes.filter(quiz => quiz.completed).length;
-  const coursesStarted = user.progress?.courses.filter(course => course.completedModules.length > 0).length;
+//   // Generating the data for the charts (Pie chart example)
+//   const quizzesAttempted = user.progress?.quizzes.filter(quiz => quiz.completed).length;
+//   const coursesStarted = user.progress?.courses.filter(course => course.completedModules.length > 0).length;
   
-  const currentDate = new Date();
-const formattedDate = currentDate.toLocaleDateString('en-US', {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+//   const currentDate = new Date();
+// const formattedDate = currentDate.toLocaleDateString('en-US', {
+//   year: 'numeric',
+//   month: 'long',
+//   day: 'numeric',
+// });
 
-// Create a canvas and generate the chart
-const canvas = createCanvas(400, 400);
-const ctx = canvas.getContext('2d');
+// // Create a canvas and generate the chart
+// const canvas = createCanvas(400, 400);
+// const ctx = canvas.getContext('2d');
 
-// Create the chart
-const chart = new Chart(ctx, {
-  type: 'bar',
-  data: {
-    labels: ['Quizzes Attempted', 'Courses Started'],
-    datasets: [{
-      label: 'User Activity',
-      data: [quizzesAttempted, coursesStarted],
-      backgroundColor: ['#3498db', '#2ecc71'],
-      borderColor: ['#2980b9', '#27ae60'],
-      borderWidth: 1
-    }]
-  },
-  options: {
-    responsive: true,
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: { stepSize: 1 }
-      }
+// // Create the chart
+// const chart = new Chart(ctx, {
+//   type: 'bar',
+//   data: {
+//     labels: ['Quizzes Attempted', 'Courses Started'],
+//     datasets: [{
+//       label: 'User Activity',
+//       data: [quizzesAttempted, coursesStarted],
+//       backgroundColor: ['#3498db', '#2ecc71'],
+//       borderColor: ['#2980b9', '#27ae60'],
+//       borderWidth: 1
+//     }]
+//   },
+//   options: {
+//     responsive: true,
+//     scales: {
+//       y: {
+//         beginAtZero: true,
+//         ticks: { stepSize: 1 }
+//       }
+//     }
+//   }
+// });
+
+// // Convert canvas to buffer and send it
+// const buffer = canvas.toBuffer();
+// bot.sendPhoto(chatId, buffer);
+//   // Prepare the formatted table
+// //   const table = `
+// // *📋 User Report:*
+
+// // | *Field*              | *Data*              |
+// // |----------------------|---------------------|
+// // | 👤 *Name*            | ${user.firstName || 'N/A'} ${user.lastName || ''} |
+// // | 🆔 *Telegram ID*     | ${user.telegramId}  |
+// // | 📊 *Quizzes*         | ${quizReport}       |
+// // | 📚 *Courses*         | ${courseReport}     |
+
+// // ---
+
+// // 🔄 *Last Updated:* ${formattedDate}
+// // `;
+
+// //   // Sending the report, chart, and table
+// //   bot.sendMessage(chatId, table, { parse_mode: 'Markdown' });
+//   // bot.sendPhoto(chatId, chartUrl);
+//       } catch (error) {
+//         console.error(error);
+//         bot.sendMessage(chatId, `⚠️ Failed to generate user report.`);
+//       }
+//     });
+  
+bot.onText(/\/userreport (\d+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  const targetTelegramId = match[1];
+
+  try {
+    // Check if the user requesting the report is an admin
+    const admin = await User.findOne({ telegramId: chatId });
+    if (!admin || !admin.isAdmin) {
+      return bot.sendMessage(chatId, `⚠️ You do not have admin privileges.`);
     }
+
+    // Find the user whose report is being requested
+    const user = await User.findOne({ telegramId: targetTelegramId }).populate('progress.quizzes.quizId progress.courses.courseId');
+    if (!user) {
+      return bot.sendMessage(chatId, `⚠️ User not found.`);
+    }
+
+    // Simulate generating progress data (quizzes and courses)
+    const quizzesAttempted = user.progress?.quizzes.filter(quiz => quiz.completed).length || 0;
+    const coursesStarted = user.progress?.courses.filter(course => course.completedModules.length > 0).length || 0;
+
+    // Current date for the report
+    const currentDate = new Date();
+    const formattedDate = currentDate.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+
+    // Prepare the progress bar simulation (CLI output)
+    const progressBar = new cliProgress.SingleBar({
+      format: '{bar} {percentage}% | {value}/{total} Progress',
+      barCompleteChar: '\u2588',
+      barIncompleteChar: '\u2591',
+      hideCursor: true
+    }, cliProgress.Presets.shades_classic);
+
+    // Start progress bar for quizzes and courses
+    progressBar.start(2, 0);
+
+    setTimeout(() => {
+      progressBar.update(1);
+    }, 1000); // Simulating quiz progress
+
+    setTimeout(() => {
+      progressBar.update(2);
+      progressBar.stop();
+    }, 2000); // Simulating course progress
+
+    // Prepare a simple textual user report
+    const reportMessage = `
+    📋 *User Report*:
+
+    👤 *Name*: ${user.firstName || 'N/A'} ${user.lastName || ''}
+    🆔 *Telegram ID*: ${user.telegramId}
+    
+    📊 *Quizzes Attempted*: ${quizzesAttempted} / ${user.progress?.quizzes.length}
+    📚 *Courses Started*: ${coursesStarted} / ${user.progress?.courses.length}
+
+    🔄 *Last Updated*: ${formattedDate}
+    `;
+
+    // Sending the simple report message to the admin
+    bot.sendMessage(chatId, reportMessage, { parse_mode: 'Markdown' });
+
+    // Sending the progress bar message to the console (CLI)
+    console.log("Progress bar displayed in CLI:");
+  } catch (error) {
+    console.error(error);
+    bot.sendMessage(chatId, `⚠️ Failed to generate user report.`);
   }
 });
-
-// Convert canvas to buffer and send it
-const buffer = canvas.toBuffer();
-bot.sendPhoto(chatId, buffer);
-  // Prepare the formatted table
-//   const table = `
-// *📋 User Report:*
-
-// | *Field*              | *Data*              |
-// |----------------------|---------------------|
-// | 👤 *Name*            | ${user.firstName || 'N/A'} ${user.lastName || ''} |
-// | 🆔 *Telegram ID*     | ${user.telegramId}  |
-// | 📊 *Quizzes*         | ${quizReport}       |
-// | 📚 *Courses*         | ${courseReport}     |
-
-// ---
-
-// 🔄 *Last Updated:* ${formattedDate}
-// `;
-
-//   // Sending the report, chart, and table
-//   bot.sendMessage(chatId, table, { parse_mode: 'Markdown' });
-  // bot.sendPhoto(chatId, chartUrl);
-      } catch (error) {
-        console.error(error);
-        bot.sendMessage(chatId, `⚠️ Failed to generate user report.`);
-      }
-    });
-  
     bot.onText(/\/popularinsights/, async (msg) => {
       const chatId = msg.chat.id;
   
