@@ -3,6 +3,7 @@ const Quiz = require('../models/Quiz');
 const User = require('../models/user');
 const Log = require('../models/Log');
 const { errorHandler } = require('../utils/errorHandler');
+const mongoose = require('mongoose');
 
 module.exports =(bot)=>{
   bot.on('message', async (msg) => {
@@ -44,7 +45,7 @@ module.exports =(bot)=>{
       // Log user interaction
       await Log.create({
         action: msg.text,
-        userId: chatId,
+        userId: mongoose.Types.ObjectId(chatId.toString())
       });
     } catch (error) {
       console.error(`⚠️ Failed to log user engagement: ${error.message}`);
