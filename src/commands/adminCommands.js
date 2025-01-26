@@ -1,5 +1,5 @@
 const { errorHandler } = require('../utils/errorHandler');
-const exportCSV = require('../utils/exportCSV');
+const exportToCSV = require('../utils/exportCSV');
 const User = require('../models/user');
 const Quiz = require('../models/Quiz');
 const Course = require('../models/Course');
