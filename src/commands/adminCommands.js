@@ -123,7 +123,7 @@ module.exports = (bot) => {
       }
     });
 
-    bot.onText(/\/listusers/, async (msg) => {
+  bot.onText(/\/listusers/, async (msg) => {
       const chatId = msg.chat.id;
   
       try {
@@ -190,13 +190,15 @@ module.exports = (bot) => {
         }
     
         // Retrieve logs from the database (limit to 50 most recent)
-        const logs = await Log.find().sort({ createdAt: -1 }).limit(50);
+        const logs = await Log.find().sort({ createdAt: -1 });
         if (logs.length === 0) {
           return bot.sendMessage(chatId, `⚠️ No logs found.`);
         }
     
         // Pagination setup
         const logsPerPage = 5; // Number of logs per page
+        const totalPages = Math.ceil(logs.length / logsPerPage); // Calculate total number of pages
+    
         let currentPage = 1;
     
         const getLogPage = (page) => {
@@ -215,32 +217,35 @@ module.exports = (bot) => {
     
         const sendLogsPage = (page) => {
           const logsPage = getLogPage(page);
-      
+    
           if (logsPage.length === 0) {
             return bot.sendMessage(chatId, '⚠️ No more logs to display.');
           }
-      
-          const logPageMessage = `📜 *Logs (Page ${page}):*\n\n${formatLogs(logsPage)}`;
-          const nextPageButton = { text: 'Next Page ➡️', callback_data: `next_${page}` };
+    
+          const logPageMessage = `📜 *Logs (Page ${page} of ${totalPages}):*\n\n${formatLogs(logsPage)}`;
+    
+          // Prepare buttons
+          const nextPageButton = page < totalPages ? { text: 'Next Page ➡️', callback_data: `next_${page}` } : null;
           const prevPageButton = page > 1 ? { text: '⬅️ Prev Page', callback_data: `prev_${page}` } : null;
-      
+    
           const keyboard = {
             inline_keyboard: [
               prevPageButton ? [prevPageButton] : [],
-              [nextPageButton],
+              nextPageButton ? [nextPageButton] : [],
             ].filter(Boolean),
           };
-      
+    
           bot.sendMessage(chatId, logPageMessage, {
             parse_mode: 'Markdown',
             reply_markup: keyboard,
           });
         };
     
+        // Handle callback queries (page navigation)
         bot.on('callback_query', async (query) => {
           const { data } = query;
           const pageMatch = data.match(/_(\d+)/);
-          
+    
           if (pageMatch) {
             currentPage = parseInt(pageMatch[1], 10);
             sendLogsPage(currentPage);
@@ -255,6 +260,7 @@ module.exports = (bot) => {
         bot.sendMessage(chatId, `⚠️ Failed to retrieve logs.`);
       }
     });
+    
     
 
 //     bot.onText(/\/userreport (\d+)/, async (msg, match) => {
