@@ -57,7 +57,7 @@ module.exports = (bot) => {
     // Define the options keyboard
     const optionsKeyboard = {
       reply_markup: {
-        keyboard: [
+        inline_keyboard: [
           [{ text: '/start' }],
           [{ text: '/export' }],
           [{ text: '/addadmin' }],
