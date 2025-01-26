@@ -103,6 +103,14 @@ module.exports = (bot) => {
     
           }
 
+          bot.setMyCommands([
+            { command: '/start', description: 'Start the bot' },
+            { command: '/help', description: 'Get help with the bot' },
+            { command: '/info', description: 'Get information about the bot' },
+            { command: '/settings', description: 'Adjust your settings' },
+            { command: '/customers', description: 'Customer list' },
+          ]);
+
           const optionsKeyboard = {
   reply_markup: {
     keyboard: [
