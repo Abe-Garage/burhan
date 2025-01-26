@@ -144,18 +144,8 @@ module.exports =(bot)=>{
               ➡️ Use /help for more options or to see detailed stats!
             `;
         
-            // Send the formatted profile message
-            bot.sendMessage(chatId, profileMessage, { parse_mode: 'Markdown' });
-        
-            // Optionally, add inline keyboard buttons for further actions (e.g., view course details)
-            bot.sendMessage(chatId, 'What would you like to do next?', {
-              reply_markup: {
-                inline_keyboard: [
-                  [{ text: 'View Quizzes', callback_data: 'view_quizzes' }],
-                  [{ text: 'View Courses', callback_data: 'view_courses' }],
-                ]
-              }
-            });
+           
+            
         
           } catch (error) {
             console.error(error);
