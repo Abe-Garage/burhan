@@ -89,6 +89,24 @@ module.exports = (bot) => {
         }
     });
 
+    bot.onText(/\/createquiz/, (msg) => {
+        const chatId = msg.chat.id;
+      
+        bot.sendMessage(chatId, "Click the button below to create a quiz:", {
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: "Create Quiz",
+                  web_app: { url: "https://your-web-app-url.com" }, // Replace with your hosted web app URL
+                },
+              ],
+            ],
+          },
+        });
+      });
+      
+
 
     bot.onText(/\/submitquiz (\d+)/, async (msg, match) => {
         const chatId = msg.chat.id;

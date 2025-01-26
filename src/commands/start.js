@@ -82,8 +82,6 @@ module.exports = (bot) => {
     ]);
   });
   
-  
-
     bot.on('callback_query', async (query) => {
         const userChoice = query.data;
     
