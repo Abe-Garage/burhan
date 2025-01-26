@@ -333,14 +333,22 @@ module.exports = (bot) => {
           { id: 'coursesCompleted', title: 'Courses Completed' },
         ];
   
-        const records = users.map((user) => ({
-          telegramId: user.telegramId,
-          username: user.username || 'N/A',
-          firstName: user.firstName || 'N/A',
-          lastName: user.lastName || 'N/A',
-          quizzesCompleted: user.progress.quizzes.filter((q) => q.completed).length,
-          coursesCompleted: user.progress.courses.filter((c) => c.completedModules.length).length,
-        }));
+        const records = users.map((user) => {
+          const progress = user.progress || { quizzes: [], courses: [] };
+    
+          return {
+            telegramId: user.telegramId || 'N/A',
+            username: user.username || 'N/A',
+            firstName: user.firstName || 'N/A',
+            lastName: user.lastName || 'N/A',
+            quizzesCompleted: Array.isArray(progress.quizzes) 
+              ? progress.quizzes.filter((q) => q.completed).length 
+              : 0,
+            coursesCompleted: Array.isArray(progress.courses) 
+              ? progress.courses.filter((c) => Array.isArray(c.completedModules) && c.completedModules.length).length 
+              : 0,
+          };
+        });
   
         await exportToCSV(filePath, header, records);
   
