@@ -125,7 +125,7 @@ module.exports = (bot) => {
   },
             };
 
-          bot.sendMessage(chatId, '', optionsKeyboard);
+          bot.sendMessage(chatId, 'mess', optionsKeyboard);
 
        
       })
