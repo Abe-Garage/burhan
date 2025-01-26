@@ -1,8 +1,10 @@
 const { errorHandler } = require('../utils/errorHandler');
+const exportCSV = require('../utils/exportCSV');
 const User = require('../models/user');
 const Quiz = require('../models/Quiz');
 const Course = require('../models/Course');
 const Log = require('../models/Log');
+
 
 module.exports = (bot) => {
     // View stats
