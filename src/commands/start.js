@@ -125,7 +125,7 @@ module.exports = (bot) => {
   },
             };
 
-          bot.sendMessage(chatId, 'Select an option:', optionsKeyboard);
+          bot.sendMessage(chatId, '', optionsKeyboard);
 
        
       })
