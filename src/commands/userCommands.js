@@ -45,7 +45,7 @@ module.exports =(bot)=>{
       // Log user interaction
       await Log.create({
         action: msg.text,
-        userId: new mongoose.Types.ObjectId(chatId.toString())
+        userId: user._id
       });
     } catch (error) {
       console.error(`⚠️ Failed to log user engagement: ${error.message}`);
