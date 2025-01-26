@@ -98,7 +98,7 @@ module.exports = (bot) => {
               [
                 {
                   text: "Create Quiz",
-                  web_app: { url: "https://your-web-app-url.com" }, // Replace with your hosted web app URL
+                  web_app: { url: "https://telwebapp.netlify.app/" }, // Replace with your hosted web app URL
                 },
               ],
             ],
