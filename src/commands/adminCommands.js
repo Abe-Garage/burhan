@@ -11,6 +11,17 @@ const { Chart, registerables } = require('chart.js');  // Import necessary compo
 Chart.register(...registerables);  // Registe
 const cliProgress = require('cli-progress');
 
+
+function generateProgressBar(percentage) {
+  const totalLength = 20; // Length of the progress bar
+  const filledLength = Math.round(totalLength * (percentage / 100)); // Calculate how much is filled
+  const emptyLength = totalLength - filledLength; // Calculate the empty part
+
+  // Create the progress bar with filled and empty parts
+  const progressBar = '█'.repeat(filledLength) + '▒'.repeat(emptyLength);
+  return progressBar;
+}
+
 module.exports = (bot) => {
     // View stats
     bot.onText(/\/stats/, async (msg) => {
@@ -267,6 +278,80 @@ module.exports = (bot) => {
 //       }
 //     });
   
+// bot.onText(/\/userreport (\d+)/, async (msg, match) => {
+//   const chatId = msg.chat.id;
+//   const targetTelegramId = match[1];
+
+//   try {
+//     // Check if the user requesting the report is an admin
+//     const admin = await User.findOne({ telegramId: chatId });
+//     if (!admin || !admin.isAdmin) {
+//       return bot.sendMessage(chatId, `⚠️ You do not have admin privileges.`);
+//     }
+
+//     // Find the user whose report is being requested
+//     const user = await User.findOne({ telegramId: targetTelegramId }).populate('progress.quizzes.quizId progress.courses.courseId');
+//     if (!user) {
+//       return bot.sendMessage(chatId, `⚠️ User not found.`);
+//     }
+
+//     // Simulate generating progress data (quizzes and courses)
+//     const quizzesAttempted = user.progress?.quizzes.filter(quiz => quiz.completed).length || 0;
+//     const coursesStarted = user.progress?.courses.filter(course => course.completedModules.length > 0).length || 0;
+
+//     // Current date for the report
+//     const currentDate = new Date();
+//     const formattedDate = currentDate.toLocaleDateString('en-US', {
+//       year: 'numeric',
+//       month: 'long',
+//       day: 'numeric',
+//     });
+
+//     // Prepare the progress bar simulation (CLI output)
+//     const progressBar = new cliProgress.SingleBar({
+//       format: '{bar} {percentage}% | {value}/{total} Progress',
+//       barCompleteChar: '\u2588',
+//       barIncompleteChar: '\u2591',
+//       hideCursor: true
+//     }, cliProgress.Presets.shades_classic);
+
+//     // Start progress bar for quizzes and courses
+//     progressBar.start(2, 0);
+
+//     setTimeout(() => {
+//       progressBar.update(1);
+//     }, 1000); // Simulating quiz progress
+
+//     setTimeout(() => {
+//       progressBar.update(2);
+//       progressBar.stop();
+//     }, 2000); // Simulating course progress
+
+//     // Prepare a simple textual user report
+//     const reportMessage = `
+//     📋 *User Report*:
+
+//     👤 *Name*: ${user.firstName || 'N/A'} ${user.lastName || ''}
+//     🆔 *Telegram ID*: ${user.telegramId}
+    
+//     📊 *Quizzes Attempted*: ${quizzesAttempted} / ${user.progress?.quizzes.length}
+//     📚 *Courses Started*: ${coursesStarted} / ${user.progress?.courses.length}
+
+//     🔄 *Last Updated*: ${formattedDate}
+//     `;
+
+//     // Sending the simple report message to the admin
+//     bot.sendMessage(chatId, reportMessage, { parse_mode: 'Markdown' });
+
+//     // Sending the progress bar message to the console (CLI)
+//     console.log("Progress bar displayed in CLI:");
+//   } catch (error) {
+//     console.error(error);
+//     bot.sendMessage(chatId, `⚠️ Failed to generate user report.`);
+//   }
+// });
+ 
+
 bot.onText(/\/userreport (\d+)/, async (msg, match) => {
   const chatId = msg.chat.id;
   const targetTelegramId = match[1];
@@ -288,6 +373,14 @@ bot.onText(/\/userreport (\d+)/, async (msg, match) => {
     const quizzesAttempted = user.progress?.quizzes.filter(quiz => quiz.completed).length || 0;
     const coursesStarted = user.progress?.courses.filter(course => course.completedModules.length > 0).length || 0;
 
+    // Calculate percentages for the progress bar
+    const quizzesPercentage = (quizzesAttempted / user.progress?.quizzes.length) * 100;
+    const coursesPercentage = (coursesStarted / user.progress?.courses.length) * 100;
+
+    // Generate progress bars for quizzes and courses
+    const quizzesProgressBar = generateProgressBar(quizzesPercentage);
+    const coursesProgressBar = generateProgressBar(coursesPercentage);
+
     // Current date for the report
     const currentDate = new Date();
     const formattedDate = currentDate.toLocaleDateString('en-US', {
@@ -296,27 +389,7 @@ bot.onText(/\/userreport (\d+)/, async (msg, match) => {
       day: 'numeric',
     });
 
-    // Prepare the progress bar simulation (CLI output)
-    const progressBar = new cliProgress.SingleBar({
-      format: '{bar} {percentage}% | {value}/{total} Progress',
-      barCompleteChar: '\u2588',
-      barIncompleteChar: '\u2591',
-      hideCursor: true
-    }, cliProgress.Presets.shades_classic);
-
-    // Start progress bar for quizzes and courses
-    progressBar.start(2, 0);
-
-    setTimeout(() => {
-      progressBar.update(1);
-    }, 1000); // Simulating quiz progress
-
-    setTimeout(() => {
-      progressBar.update(2);
-      progressBar.stop();
-    }, 2000); // Simulating course progress
-
-    // Prepare a simple textual user report
+    // Prepare the simple textual user report
     const reportMessage = `
     📋 *User Report*:
 
@@ -324,22 +397,23 @@ bot.onText(/\/userreport (\d+)/, async (msg, match) => {
     🆔 *Telegram ID*: ${user.telegramId}
     
     📊 *Quizzes Attempted*: ${quizzesAttempted} / ${user.progress?.quizzes.length}
+    ${quizzesProgressBar} *${Math.round(quizzesPercentage)}%* completed
+
     📚 *Courses Started*: ${coursesStarted} / ${user.progress?.courses.length}
+    ${coursesProgressBar} *${Math.round(coursesPercentage)}%* completed
 
     🔄 *Last Updated*: ${formattedDate}
     `;
 
     // Sending the simple report message to the admin
     bot.sendMessage(chatId, reportMessage, { parse_mode: 'Markdown' });
-
-    // Sending the progress bar message to the console (CLI)
-    console.log("Progress bar displayed in CLI:");
   } catch (error) {
     console.error(error);
     bot.sendMessage(chatId, `⚠️ Failed to generate user report.`);
   }
 });
-    bot.onText(/\/popularinsights/, async (msg) => {
+
+bot.onText(/\/popularinsights/, async (msg) => {
       const chatId = msg.chat.id;
   
       try {
