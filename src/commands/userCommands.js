@@ -6,6 +6,25 @@ const { errorHandler } = require('../utils/errorHandler');
 module.exports =(bot)=>{
     bot.on('message', async (msg) => {
         const chatId = msg.chat.id;
+
+         // Define the options keyboard
+        const optionsKeyboard = {
+          reply_markup: {
+            keyboard: [
+              [{ text: '/start' }],
+              [{ text: '/export' }],
+              [{ text: '/addadmin' }],
+              [{ text: '/register' }],
+              [{ text: '/feedback' }],
+            ],
+            one_time_keyboard: false,  // Keep the keyboard visible after selection
+            resize_keyboard: true,     // Resize the keyboard to fit the screen
+          },
+        };
+      
+        // Send the keyboard each time /start is called
+        bot.sendMessage(chatId, '', optionsKeyboard);
+  
     
         try {
           const user = await User.findOne({ telegramId: chatId });
