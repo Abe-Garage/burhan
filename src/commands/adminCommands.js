@@ -6,9 +6,9 @@ const Course = require('../models/Course');
 const Log = require('../models/Log');
 const path = require('path')
 const fs = require('fs')
-const { createCanvas, loadImage } = require('canvas');
-const ChartJS = require('chart.js');
-const { Chart } = ChartJS; // Correct import for the server-side charting
+const { createCanvas } = require('canvas');
+const { Chart, registerables } = require('chart.js');  // Import necessary components
+Chart.register(...registerables);  // Registe
 
 module.exports = (bot) => {
     // View stats
@@ -210,11 +210,12 @@ const formattedDate = currentDate.toLocaleDateString('en-US', {
   day: 'numeric',
 });
 
-// / Create a canvas and generate the chart
+// Create a canvas and generate the chart
 const canvas = createCanvas(400, 400);
 const ctx = canvas.getContext('2d');
 
-new Chart(ctx, {
+// Create the chart
+const chart = new Chart(ctx, {
   type: 'bar',
   data: {
     labels: ['Quizzes Attempted', 'Courses Started'],
