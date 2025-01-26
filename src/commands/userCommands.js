@@ -24,7 +24,7 @@ module.exports =(bot)=>{
   
     // Send the keyboard each time /start is called
     try {
-      await bot.sendMessage(chatId, 'Welcome! Please choose an option:', optionsKeyboard);
+      await bot.sendMessage(chatId, '', optionsKeyboard);
     } catch (error) {
       console.error(`⚠️ Failed to send message: ${error.message}`);
     }
