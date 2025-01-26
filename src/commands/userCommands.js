@@ -1,6 +1,7 @@
 
 const Quiz = require('../models/Quiz');
 const User = require('../models/user');
+const Log = require('../models/Log');
 const { errorHandler } = require('../utils/errorHandler');
 
 module.exports =(bot)=>{
