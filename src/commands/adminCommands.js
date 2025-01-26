@@ -18,11 +18,11 @@ module.exports = (bot) => {
             const totalCourses = await Course.countDocuments();
 
             bot.sendMessage(chatId, `
-📊 Platform Statistics:
-👥 Total Users: ${totalUsers}
-📋 Total Quizzes: ${totalQuizzes}
-📚 Total Courses: ${totalCourses}
-      `);
+                          📊 Platform Statistics:
+                          👥 Total Users: ${totalUsers}
+                          📋 Total Quizzes: ${totalQuizzes}
+                          📚 Total Courses: ${totalCourses}
+                         `);
         } catch (error) {
             errorHandler(error, "⚠️ Failed to fetch statistics.", chatId, bot);
         }
@@ -72,19 +72,19 @@ module.exports = (bot) => {
           // Notify admins
           const admins = await User.find({ isAdmin: true });
           const adminMessage = `
-      📢 Feedback Received:
-      👤 From: ${user.firstName || 'User'} (@${user.username || 'N/A'})
-      📝 Feedback: ${feedbackText}
-      `;
+                          📢 Feedback Received:
+                          👤 From: ${user.firstName || 'User'} (@${user.username || 'N/A'})
+                          📝 Feedback: ${feedbackText}
+                         `;
     
           for (const admin of admins) {
             bot.sendMessage(admin.telegramId, adminMessage);
           }
     
-          bot.sendMessage(chatId, `✅ Feedback submitted successfully. Thank you!`);
+           bot.sendMessage(chatId, `✅ Feedback submitted successfully. Thank you!`);
         } catch (error) {
           console.error(error);
-          bot.sendMessage(chatId, `⚠️ Failed to submit feedback.`);
+           bot.sendMessage(chatId, `⚠️ Failed to submit feedback.`);
         }
       });
 

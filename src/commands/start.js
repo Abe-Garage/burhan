@@ -72,17 +72,19 @@ module.exports = (bot) => {
     // Send the keyboard each time /start is called
     bot.sendMessage(chatId, '', optionsKeyboard);
   
-    // Optionally, you can set bot commands here
-    bot.setMyCommands([
-      { command: '/start', description: 'Start the bot' },
-      { command: '/courses', description: 'Get help with the bot' },
-      { command: '/addadmin', description: 'Get information about the bot' },
-      { command: '/settings', description: 'Adjust your settings' },
-      { command: '/export', description: 'Customer list' },
-    ]);
+   
   });
+
+   // Optionally, you can set bot commands here
+   bot.setMyCommands([
+    { command: '/start', description: 'Start the bot' },
+    { command: '/courses', description: 'Get help with the bot' },
+    { command: '/addadmin', description: 'Get information about the bot' },
+    { command: '/settings', description: 'Adjust your settings' },
+    { command: '/export', description: 'Customer list' },
+  ]);
   
-    bot.on('callback_query', async (query) => {
+  bot.on('callback_query', async (query) => {
         const userChoice = query.data;
     
         // Update the buttons to reflect the selected answer

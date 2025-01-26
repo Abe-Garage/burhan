@@ -75,10 +75,10 @@ module.exports = (bot) => {
             bot.sendMessage(chatId, `✅ Quiz completed! You scored ${score}/${selectedQuiz.questions.length}.`);
             const admins = await User.find({ isAdmin: true });
             const adminMessage = `
-      🎉 User ${user.firstName || 'User'} completed a quiz!
-      📋 Quiz: ${selectedQuiz.title}
-      📊 Score: ${score}/${selectedQuiz.questions.length}
-      `;
+                        🎉 User ${user.firstName || 'User'} completed a quiz!
+                        📋 Quiz: ${selectedQuiz.title}
+                        📊 Score: ${score}/${selectedQuiz.questions.length}
+                       `;
 
             for (const admin of admins) {
                 bot.sendMessage(admin.telegramId, adminMessage);

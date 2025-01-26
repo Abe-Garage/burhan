@@ -28,6 +28,16 @@ module.exports =(bot)=>{
         }
       });
 
+     bot.on("new_chat_members", (msg) => {
+        const chatId = msg.chat.id;
+        const newMembers = msg.new_chat_members
+          .map((user) => user.first_name || "New Member")
+          .join(", ");
+      
+        bot.sendMessage(chatId, `Welcome to the group, ${newMembers}! 🎉`);
+      });
+      
+
     bot.onText(/\/stats/, async (msg) => {
         const chatId = msg.chat.id;
     
