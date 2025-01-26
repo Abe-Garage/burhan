@@ -4,48 +4,52 @@ const User = require('../models/user');
 const { errorHandler } = require('../utils/errorHandler');
 
 module.exports =(bot)=>{
-    bot.on('message', async (msg) => {
-        const chatId = msg.chat.id;
-
-         // Define the options keyboard
-        const optionsKeyboard = {
-          reply_markup: {
-            keyboard: [
-              [{ text: '/start' }],
-              [{ text: '/export' }],
-              [{ text: '/addadmin' }],
-              [{ text: '/register' }],
-              [{ text: '/feedback' }],
-            ],
-            one_time_keyboard: false,  // Keep the keyboard visible after selection
-            resize_keyboard: true,     // Resize the keyboard to fit the screen
-          },
-        };
-      
-        // Send the keyboard each time /start is called
-        bot.sendMessage(chatId, '', optionsKeyboard);
+  bot.on('message', async (msg) => {
+    const chatId = msg.chat.id;
   
-    
-        try {
-          const user = await User.findOne({ telegramId: chatId });
-          if (!user) {
-            await User.create({
-              telegramId: chatId,
-              username: msg.chat.username || '',
-              firstName: msg.chat.first_name || '',
-              lastName: msg.chat.last_name || '',
-            });
-          }
-    
-          // Log user interaction
-          await Log.create({
-            action: msg.text,
-            userId: chatId,
-          });
-        } catch (error) {
-          console.error(`⚠️ Failed to log user engagement: ${error.message}`);
-        }
+    // Define the options keyboard
+    const optionsKeyboard = {
+      reply_markup: {
+        keyboard: [
+          [{ text: '/start' }],
+          [{ text: '/export' }],
+          [{ text: '/addadmin' }],
+          [{ text: '/register' }],
+          [{ text: '/feedback' }],
+        ],
+        one_time_keyboard: false,  // Keep the keyboard visible after selection
+        resize_keyboard: true,     // Resize the keyboard to fit the screen
+      },
+    };
+  
+    // Send the keyboard each time /start is called
+    try {
+      await bot.sendMessage(chatId, 'Welcome! Please choose an option:', optionsKeyboard);
+    } catch (error) {
+      console.error(`⚠️ Failed to send message: ${error.message}`);
+    }
+  
+    try {
+      const user = await User.findOne({ telegramId: chatId });
+      if (!user) {
+        await User.create({
+          telegramId: chatId,
+          username: msg.chat.username || '',
+          firstName: msg.chat.first_name || '',
+          lastName: msg.chat.last_name || '',
+        });
+      }
+  
+      // Log user interaction
+      await Log.create({
+        action: msg.text,
+        userId: chatId,
       });
+    } catch (error) {
+      console.error(`⚠️ Failed to log user engagement: ${error.message}`);
+    }
+  });
+  
 
      bot.on("new_chat_members", (msg) => {
         const chatId = msg.chat.id;
