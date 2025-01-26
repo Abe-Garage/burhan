@@ -1,6 +1,7 @@
 
 const Quiz = require('../models/Quiz');
 const User = require('../models/user');
+const Course = require('../models/Course');
 const { errorHandler } = require('../utils/errorHandler');
 
 module.exports =(bot)=>{
