@@ -4,6 +4,7 @@ const User = require('../models/user');
 const Quiz = require('../models/Quiz');
 const Course = require('../models/Course');
 const Log = require('../models/Log');
+const path = require('path')
 
 
 module.exports = (bot) => {
