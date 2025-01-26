@@ -6,7 +6,8 @@ const Course = require('../models/Course');
 const Log = require('../models/Log');
 const path = require('path')
 const fs = require('fs')
-
+const { createCanvas } = require('canvas');
+const Chart = require('chart.js');
 
 module.exports = (bot) => {
     // View stats
@@ -208,42 +209,55 @@ const formattedDate = currentDate.toLocaleDateString('en-US', {
   day: 'numeric',
 });
 
-  const chartUrl = `https://quickchart.io/chart?c={
-    type: 'pie',
-    data: {
-      labels: ['Quizzes Attempted', 'Courses Started'],
-      datasets: [{
-        data: [${quizzesAttempted}, ${coursesStarted}],
-        backgroundColor: ['#3498db', '#2ecc71']
-      }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: { position: 'top' }
+// / Create a canvas and generate the chart
+const canvas = createCanvas(400, 400);
+const ctx = canvas.getContext('2d');
+
+new Chart(ctx, {
+  type: 'bar',
+  data: {
+    labels: ['Quizzes Attempted', 'Courses Started'],
+    datasets: [{
+      label: 'User Activity',
+      data: [quizzesAttempted, coursesStarted],
+      backgroundColor: ['#3498db', '#2ecc71'],
+      borderColor: ['#2980b9', '#27ae60'],
+      borderWidth: 1
+    }]
+  },
+  options: {
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: { stepSize: 1 }
       }
     }
-  }`;
+  }
+});
 
+// Convert canvas to buffer and send it
+const buffer = canvas.toBuffer();
+bot.sendPhoto(chatId, buffer);
   // Prepare the formatted table
-  const table = `
-*📋 User Report:*
+//   const table = `
+// *📋 User Report:*
 
-| *Field*              | *Data*              |
-|----------------------|---------------------|
-| 👤 *Name*            | ${user.firstName || 'N/A'} ${user.lastName || ''} |
-| 🆔 *Telegram ID*     | ${user.telegramId}  |
-| 📊 *Quizzes*         | ${quizReport}       |
-| 📚 *Courses*         | ${courseReport}     |
+// | *Field*              | *Data*              |
+// |----------------------|---------------------|
+// | 👤 *Name*            | ${user.firstName || 'N/A'} ${user.lastName || ''} |
+// | 🆔 *Telegram ID*     | ${user.telegramId}  |
+// | 📊 *Quizzes*         | ${quizReport}       |
+// | 📚 *Courses*         | ${courseReport}     |
 
----
+// ---
 
-🔄 *Last Updated:* ${formattedDate}
-`;
+// 🔄 *Last Updated:* ${formattedDate}
+// `;
 
-  // Sending the report, chart, and table
-  bot.sendMessage(chatId, table, { parse_mode: 'Markdown' });
-  bot.sendPhoto(chatId, chartUrl);
+//   // Sending the report, chart, and table
+//   bot.sendMessage(chatId, table, { parse_mode: 'Markdown' });
+  // bot.sendPhoto(chatId, chartUrl);
       } catch (error) {
         console.error(error);
         bot.sendMessage(chatId, `⚠️ Failed to generate user report.`);
