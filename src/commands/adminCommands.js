@@ -311,19 +311,30 @@ module.exports = (bot) => {
   
     bot.onText(/\/export/, async (msg) => {
       const chatId = msg.chat.id;
-  
+    
       try {
+        // Check if the user is an admin
         const admin = await User.findOne({ telegramId: chatId });
         if (!admin || !admin.isAdmin) {
           return bot.sendMessage(chatId, `⚠️ You do not have admin privileges.`);
         }
-  
+    
+        // Fetch all user data
         const users = await User.find().lean();
         if (users.length === 0) {
           return bot.sendMessage(chatId, `No user data available to export.`);
         }
-  
-        const filePath = path.resolve(__dirname, 'exports', `users_${Date.now()}.csv`);
+    
+        // Define temporary directory and ensure it exists
+        const dir = path.join('/tmp', 'exports');
+        if (!fs.existsSync(dir)) {
+          fs.mkdirSync(dir, { recursive: true });
+        }
+    
+        // Define file path for the CSV
+        const filePath = path.join(dir, `users_${Date.now()}.csv`);
+    
+        // Define CSV header
         const header = [
           { id: 'telegramId', title: 'Telegram ID' },
           { id: 'username', title: 'Username' },
@@ -332,27 +343,26 @@ module.exports = (bot) => {
           { id: 'quizzesCompleted', title: 'Quizzes Completed' },
           { id: 'coursesCompleted', title: 'Courses Completed' },
         ];
-  
-        const records = users.map((user) => {
-          const progress = user.progress || { quizzes: [], courses: [] };
     
-          return {
-            telegramId: user.telegramId || 'N/A',
-            username: user.username || 'N/A',
-            firstName: user.firstName || 'N/A',
-            lastName: user.lastName || 'N/A',
-            quizzesCompleted: Array.isArray(progress.quizzes) 
-              ? progress.quizzes.filter((q) => q.completed).length 
-              : 0,
-            coursesCompleted: Array.isArray(progress.courses) 
-              ? progress.courses.filter((c) => Array.isArray(c.completedModules) && c.completedModules.length).length 
-              : 0,
-          };
-        });
-  
+        // Map user data to records
+        const records = users.map((user) => ({
+          telegramId: user.telegramId,
+          username: user.username || 'N/A',
+          firstName: user.firstName || 'N/A',
+          lastName: user.lastName || 'N/A',
+          quizzesCompleted: user.progress?.quizzes?.filter((q) => q.completed).length || 0,
+          coursesCompleted: user.progress?.courses?.filter((c) => c.completedModules?.length).length || 0,
+        }));
+    
+        // Export data to CSV
         await exportToCSV(filePath, header, records);
-  
-        bot.sendDocument(chatId, filePath);
+    
+        // Check if the file exists and send it to the user
+        if (fs.existsSync(filePath)) {
+          await bot.sendDocument(chatId, filePath);
+        } else {
+          bot.sendMessage(chatId, `⚠️ Export failed. File not found.`);
+        }
       } catch (error) {
         console.error(error);
         bot.sendMessage(chatId, `⚠️ An error occurred while exporting data.`);
