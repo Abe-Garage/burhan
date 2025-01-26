@@ -34,37 +34,6 @@ module.exports = (bot) => {
         }
     });
 
-    // Export data
-    // bot.onText(/\/export/, async (msg) => {
-    //     const chatId = msg.chat.id;
-
-    //     try {
-    //         const admin = await User.findOne({ telegramId: chatId });
-    //         if (!admin?.isAdmin) {
-    //             return bot.sendMessage(chatId, "⚠️ You do not have admin privileges.");
-    //         }
-
-    //         const users = await User.find().lean();
-    //         if (!users.length) {
-    //             return bot.sendMessage(chatId, "No user data available to export.");
-    //         }
-
-    //         const csvData = users.map((user) => ({
-    //             telegramId: user.telegramId,
-    //             username: user.username || 'N/A',
-    //             firstName: user.firstName || 'N/A',
-    //             lastName: user.lastName || 'N/A',
-    //             quizzesCompleted: user.progress.quizzes.filter((q) => q.completed).length,
-    //             coursesCompleted: user.progress.courses.filter((c) => c.completedModules.length).length,
-    //         }));
-
-    //         const filePath = await exportToCSV('users.csv', csvData);
-    //         bot.sendDocument(chatId, filePath);
-    //     } catch (error) {
-    //         errorHandler(error, "⚠️ Failed to export data.", chatId, bot);
-    //     }
-    // });
-
     bot.onText(/\/feedback (.+)/, async (msg, match) => {
         const chatId = msg.chat.id;
         const feedbackText = match[1];
@@ -163,9 +132,8 @@ module.exports = (bot) => {
         bot.sendMessage(chatId, `⚠️ Failed to retrieve users.`);
       }
     });
-    
-    
-      // view logs 
+      
+    // view logs 
     bot.onText(/\/viewlogs/, async (msg) => {
       const chatId = msg.chat.id;
   
@@ -189,7 +157,6 @@ module.exports = (bot) => {
         bot.sendMessage(chatId, `⚠️ Failed to retrieve logs.`);
       }
     });
-
 
     bot.onText(/\/userreport (\d+)/, async (msg, match) => {
       const chatId = msg.chat.id;
@@ -234,7 +201,6 @@ module.exports = (bot) => {
         bot.sendMessage(chatId, `⚠️ Failed to generate user report.`);
       }
     });
-  
   
     bot.onText(/\/popularinsights/, async (msg) => {
       const chatId = msg.chat.id;
@@ -369,7 +335,6 @@ module.exports = (bot) => {
         bot.sendMessage(chatId, `⚠️ An error occurred while exporting data.`);
       }
     });
-  
   
     bot.onText(/\/insights/, async (msg) => {
       const chatId = msg.chat.id;

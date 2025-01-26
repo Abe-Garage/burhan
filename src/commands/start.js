@@ -1,7 +1,7 @@
 
 
 module.exports = (bot) => {
-  bot.onText(/\/start/, (msg) => {
+   bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
   
     const welcomeMessage = `👋 Welcome to <b>Burhan School</b> <i>Bot!</i>\n\n🚀 <code>Use this bot to enhance your skills by exploring quizzes, courses, and more.</code>`;
@@ -73,7 +73,7 @@ module.exports = (bot) => {
     bot.sendMessage(chatId, '', optionsKeyboard);
   
    
-  });
+   });
 
    // Optionally, you can set bot commands here
    bot.setMyCommands([
@@ -84,7 +84,7 @@ module.exports = (bot) => {
     { command: '/export', description: 'Customer list' },
   ]);
   
-  bot.on('callback_query', async (query) => {
+   bot.on('callback_query', async (query) => {
         const userChoice = query.data;
     
         // Update the buttons to reflect the selected answer
@@ -99,5 +99,5 @@ module.exports = (bot) => {
         });
     
         await bot.answerCallbackQuery(query.id, { text: `You selected: ${userChoice}` });
-      });
+    });
 }

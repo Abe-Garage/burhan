@@ -76,7 +76,7 @@ module.exports = (bot) => {
         }
       });
 
-      bot.onText(/\/startcourse (\d+)/, async (msg, match) => {
+    bot.onText(/\/startcourse (\d+)/, async (msg, match) => {
         const chatId = msg.chat.id;
         const courseId = match[1];
     
@@ -108,8 +108,7 @@ module.exports = (bot) => {
         }
       });
     
-    
-      bot.onText(/\/completeModule (\d+)/, async (msg, match) => {
+    bot.onText(/\/completeModule (\d+)/, async (msg, match) => {
         const chatId = msg.chat.id;
         const moduleNumber = parseInt(match[1]);
     

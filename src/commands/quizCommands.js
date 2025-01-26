@@ -106,8 +106,6 @@ module.exports = (bot) => {
         });
       });
       
-
-
     bot.onText(/\/submitquiz (\d+)/, async (msg, match) => {
         const chatId = msg.chat.id;
         const quizId = match[1];
