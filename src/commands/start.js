@@ -112,20 +112,20 @@ module.exports = (bot) => {
           ]);
 
           const optionsKeyboard = {
-                reply_markup: {
-                  keyboard: [
-                    [{ text: '/start' }],
-                    [{ text: '/help' }],
-                    [{ text: '/categories' }],
-                    [{ text: '/settings' }],
-                    [{ text: '/feedback' }],
-                  ],
-                  one_time_keyboard: false, // Optional: hides the keyboard after selection
-                  resize_keyboard: true,   // Optional: resizes the keyboard to fit the screen
+              reply_markup: {
+                keyboard: [
+                  [{ text: '/start' }],
+                  [{ text: '/help' }],
+                  [{ text: '/categories' }],
+                  [{ text: '/settings' }],
+                  [{ text: '/feedback' }],
+                ],
+    one_time_keyboard: false, // Optional: hides the keyboard after selection
+    resize_keyboard: true,   // Optional: resizes the keyboard to fit the screen
   },
             };
 
-          bot.sendMessage(chatId, 'mess', optionsKeyboard);
+          bot.sendMessage(chatId, 'Select an option:', optionsKeyboard);
 
        
       })
