@@ -6,8 +6,9 @@ const Course = require('../models/Course');
 const Log = require('../models/Log');
 const path = require('path')
 const fs = require('fs')
-const { createCanvas } = require('canvas');
-const Chart = require('chart.js');
+const { createCanvas, loadImage } = require('canvas');
+const ChartJS = require('chart.js');
+const { Chart } = ChartJS; // Correct import for the server-side charting
 
 module.exports = (bot) => {
     // View stats
