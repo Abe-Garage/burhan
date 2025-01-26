@@ -64,28 +64,27 @@ module.exports =(bot)=>{
     bot.onText(/\/stats/, async (msg) => {
         const chatId = msg.chat.id;
     
-        try {
-        const admin = await User.findOne({ telegramId: chatId });
-        if (!admin || !admin.isAdmin) {
-            return bot.sendMessage(chatId, `⚠️ You do not have admin privileges.`);
-        }
-    
-        const totalUsers = await User.countDocuments();
-        const totalQuizzes = await Quiz.countDocuments();
-        const totalCourses = await Course.countDocuments();
-    
-        const statsMessage = `
-    📊 Platform Statistics:
-    
-    👥 Total Users: ${totalUsers}
-    📋 Total Quizzes: ${totalQuizzes}
-    📚 Total Courses: ${totalCourses}
-    `;
-    
-        bot.sendMessage(chatId, statsMessage);
+            try {
+            const admin = await User.findOne({ telegramId: chatId });
+            if (!admin || !admin.isAdmin) {
+                return bot.sendMessage(chatId, `⚠️ You do not have admin privileges.`);
+            }
+        
+            const totalUsers = await User.countDocuments();
+            const totalQuizzes = await Quiz.countDocuments();
+            const totalCourses = await Course.countDocuments();
+        
+            const statsMessage = `
+                            📊 Platform Statistics:
+                            👥 Total Users: ${totalUsers}
+                            📋 Total Quizzes: ${totalQuizzes}
+                            📚 Total Courses: ${totalCourses}
+                            `;
+        
+            bot.sendMessage(chatId, statsMessage);
         } catch (error) {
         console.error(error);
-        bot.sendMessage(chatId, `⚠️ Failed to fetch statistics.`);
+                 bot.sendMessage(chatId, `⚠️ Failed to fetch statistics.`);
         }
     });
 
@@ -94,9 +93,12 @@ module.exports =(bot)=>{
         const firstName = msg.from.first_name;
         const lastName = msg.from.last_name || '';
         const username = msg.from.username || '';
+
+        console.log("datas", chatId, firstName, lastName, username)
     
         try {
           const existingUser = await User.findOne({ telegramId: chatId });
+          console.log(existingUser)
           if (existingUser) {
             return bot.sendMessage(chatId, `⚠️ You are already registered.`);
           }
@@ -115,9 +117,10 @@ module.exports =(bot)=>{
           // Notify admins
           const admins = await User.find({ isAdmin: true });
           const adminMessage = `📢 New User Registered:
-      👤 Name: ${firstName} ${lastName}
-      📧 Username: @${username}
-      🆔 Telegram ID: ${chatId}`;
+                      👤 Name: ${firstName} ${lastName}
+                      📧 Username: @${username}
+                      🆔 Telegram ID: ${chatId}
+                      `;
     
           for (const admin of admins) {
             bot.sendMessage(admin.telegramId, adminMessage);
@@ -129,30 +132,30 @@ module.exports =(bot)=>{
       });
 
     bot.onText(/\/profile/, async (msg) => {
-    const chatId = msg.chat.id;
+          const chatId = msg.chat.id;
 
-    try {
-        // Find user by telegramId
-        const user = await User.findOne({ telegramId: chatId });
-        if (!user) {
-        return bot.sendMessage(chatId, `⚠️ You are not registered. Use /register to create an account.`);
-        }
+            try {
+                // Find user by telegramId
+                const user = await User.findOne({ telegramId: chatId });
+                if (!user) {
+                return bot.sendMessage(chatId, `⚠️ You are not registered. Use /register to create an account.`);
+                }
 
-        // Prepare profile message
-        const profileMessage = `
-👤 *Your Profile:*
-- Username: ${user.username || 'Not set'}
-- Name: ${user.firstName || 'Not set'} ${user.lastName || ''}
-- Progress:
-    *Quizzes Completed*: ${user.progress?.quizzes?.filter(q => q.completed).length || 0}
-    *Courses Completed*: ${user.progress?.courses?.filter(c => c.completedModules.length).length || 0}
-`;
+                // Prepare profile message
+                const profileMessage = `
+                        👤 *Your Profile:*
+                        - Username: ${user.username || 'Not set'}
+                        - Name: ${user.firstName || 'Not set'} ${user.lastName || ''}
+                        - Progress:
+                            *Quizzes Completed*: ${user.progress?.quizzes?.filter(q => q.completed).length || 0}
+                            *Courses Completed*: ${user.progress?.courses?.filter(c => c.completedModules.length).length || 0}
+                        `;
 
-        bot.sendMessage(chatId, profileMessage, { parse_mode: 'Markdown' });
-    } catch (error) {
-        console.error(error);
-        bot.sendMessage(chatId, `⚠️ Failed to fetch profile. Please try again later.`);
-    }
+                bot.sendMessage(chatId, profileMessage, { parse_mode: 'Markdown' });
+            } catch (error) {
+                console.error(error);
+                bot.sendMessage(chatId, `⚠️ Failed to fetch profile. Please try again later.`);
+            }
     });
     
     
@@ -160,22 +163,22 @@ module.exports =(bot)=>{
     
       // Handle /editprofile command
     bot.onText(/\/editprofile (.+)/, async (msg, match) => {
-    const chatId = msg.chat.id;
-    const newUsername = match[1].trim();
+          const chatId = msg.chat.id;
+          const newUsername = match[1].trim();
 
-    try {
-        const user = await User.findOne({ telegramId: chatId });
-        if (!user) {
-        return bot.sendMessage(chatId, `⚠️ You are not registered. Use /register to create an account.`);
-        }
+          try {
+              const user = await User.findOne({ telegramId: chatId });
+              if (!user) {
+              return bot.sendMessage(chatId, `⚠️ You are not registered. Use /register to create an account.`);
+              }
 
-        user.username = newUsername;
-        await user.save();
+              user.username = newUsername;
+              await user.save();
 
-        bot.sendMessage(chatId, `✅ Your profile has been updated. New username: ${newUsername}`);
-    } catch (error) {
-        console.error(error);
-        bot.sendMessage(chatId, `⚠️ Failed to update profile. Please try again later.`);
-    }
+              bot.sendMessage(chatId, `✅ Your profile has been updated. New username: ${newUsername}`);
+          } catch (error) {
+              console.error(error);
+              bot.sendMessage(chatId, `⚠️ Failed to update profile. Please try again later.`);
+          }
     });
 }
