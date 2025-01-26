@@ -138,9 +138,16 @@ module.exports = (bot) => {
         }
   
         const userList = users
-          .map((user, index) => `${index + 1}. ${user.username || user.telegramId}`)
-          .join('\n');
-        bot.sendMessage(chatId, `📋 Registered Users:\n${userList}`);
+        .map((user, index) => {
+          // Format each line with index and username (or telegram ID if no username)
+          const userName = user.username || user.telegramId;
+          return `${index + 1}. \`${userName}\``; // Using monospace formatting
+        })
+        .join('\n');
+
+      // Send formatted message with registered users in a neat list format
+        bot.sendMessage(chatId, `📋 *Registered Users:*\n\n${userList}`, { parse_mode: 'Markdown' });
+
       } catch (error) {
         console.error(error);
         bot.sendMessage(chatId, `⚠️ Failed to retrieve users.`);
@@ -148,29 +155,107 @@ module.exports = (bot) => {
     });
       
     // view logs 
+    // bot.onText(/\/viewlogs/, async (msg) => {
+    //   const chatId = msg.chat.id;
+  
+    //   try {
+    //     const admin = await User.findOne({ telegramId: chatId });
+    //     if (!admin || !admin.isAdmin) {
+    //       return bot.sendMessage(chatId, `⚠️ You do not have admin privileges.`);
+    //     }
+  
+    //     const logs = await Log.find().sort({ createdAt: -1 }).limit(50);
+    //     if (logs.length === 0) {
+    //       return bot.sendMessage(chatId, `No logs found.`);
+    //     }
+  
+    //     const logList = logs
+    //       .map((log) => `${log.action} - ${new Date(log.createdAt).toLocaleString()}`)
+    //       .join('\n');
+    //     bot.sendMessage(chatId, `📜 Logs:\n${logList}`);
+    //   } catch (error) {
+    //     console.error(error);
+    //     bot.sendMessage(chatId, `⚠️ Failed to retrieve logs.`);
+    //   }
+    // });
+
     bot.onText(/\/viewlogs/, async (msg) => {
       const chatId = msg.chat.id;
-  
+    
       try {
+        // Check if the user is an admin
         const admin = await User.findOne({ telegramId: chatId });
         if (!admin || !admin.isAdmin) {
           return bot.sendMessage(chatId, `⚠️ You do not have admin privileges.`);
         }
-  
+    
+        // Retrieve logs from the database (limit to 50 most recent)
         const logs = await Log.find().sort({ createdAt: -1 }).limit(50);
         if (logs.length === 0) {
-          return bot.sendMessage(chatId, `No logs found.`);
+          return bot.sendMessage(chatId, `⚠️ No logs found.`);
         }
-  
-        const logList = logs
-          .map((log) => `${log.action} - ${new Date(log.createdAt).toLocaleString()}`)
-          .join('\n');
-        bot.sendMessage(chatId, `📜 Logs:\n${logList}`);
+    
+        // Pagination setup
+        const logsPerPage = 5; // Number of logs per page
+        let currentPage = 1;
+    
+        const getLogPage = (page) => {
+          const startIndex = (page - 1) * logsPerPage;
+          const endIndex = page * logsPerPage;
+          return logs.slice(startIndex, endIndex);
+        };
+    
+        const formatLogs = (logs) => {
+          return logs
+            .map((log) => {
+              return `🔹 *Action:* ${log.action}\n📅 *Date:* ${new Date(log.createdAt).toLocaleString()}\n`;
+            })
+            .join('\n');
+        };
+    
+        const sendLogsPage = (page) => {
+          const logsPage = getLogPage(page);
+      
+          if (logsPage.length === 0) {
+            return bot.sendMessage(chatId, '⚠️ No more logs to display.');
+          }
+      
+          const logPageMessage = `📜 *Logs (Page ${page}):*\n\n${formatLogs(logsPage)}`;
+          const nextPageButton = { text: 'Next Page ➡️', callback_data: `next_${page}` };
+          const prevPageButton = page > 1 ? { text: '⬅️ Prev Page', callback_data: `prev_${page}` } : null;
+      
+          const keyboard = {
+            inline_keyboard: [
+              prevPageButton ? [prevPageButton] : [],
+              [nextPageButton],
+            ].filter(Boolean),
+          };
+      
+          bot.sendMessage(chatId, logPageMessage, {
+            parse_mode: 'Markdown',
+            reply_markup: keyboard,
+          });
+        };
+    
+        bot.on('callback_query', async (query) => {
+          const { data } = query;
+          const pageMatch = data.match(/_(\d+)/);
+          
+          if (pageMatch) {
+            currentPage = parseInt(pageMatch[1], 10);
+            sendLogsPage(currentPage);
+          }
+        });
+    
+        // Initially show the first page of logs
+        sendLogsPage(1);
+    
       } catch (error) {
         console.error(error);
         bot.sendMessage(chatId, `⚠️ Failed to retrieve logs.`);
       }
     });
+    
 
 //     bot.onText(/\/userreport (\d+)/, async (msg, match) => {
 //       const chatId = msg.chat.id;
@@ -487,7 +572,7 @@ bot.onText(/\/popularinsights/, async (msg) => {
     });
   
   
-    bot.onText(/\/export/, async (msg) => {
+bot.onText(/\/export/, async (msg) => {
       const chatId = msg.chat.id;
     
       try {
@@ -545,9 +630,9 @@ bot.onText(/\/popularinsights/, async (msg) => {
         console.error(error);
         bot.sendMessage(chatId, `⚠️ An error occurred while exporting data.`);
       }
-    });
+  });
   
-    bot.onText(/\/insights/, async (msg) => {
+bot.onText(/\/insights/, async (msg) => {
       const chatId = msg.chat.id;
   
       try {
@@ -619,5 +704,5 @@ bot.onText(/\/popularinsights/, async (msg) => {
         console.error(error);
         bot.sendMessage(chatId, `⚠️ An error occurred while generating insights.`);
       }
-    });
+});
 };
