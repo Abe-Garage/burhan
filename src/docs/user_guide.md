@@ -23,4 +23,4 @@
 ---
 
 ## Support
-For support, contact us at: [support@skillbridge.com](mailto:support@skillbridge.com).
+For support, contact us at: [support@burhan.com](mailto:resilience86400@gmail.com).
