@@ -43,6 +43,12 @@ const commandMap = {
     'CREATE QUIZ': async (bot, chatId) => {
       
       createQuiz(bot, chatId);
+    },
+    'USER REPORT':async(bot,chatId)=>{
+      userReport(bot, chatId);
+    },
+    'INSIGHTS':async(bot,chatId)=>{
+      insights(bot, chatId);
     }
   };
   

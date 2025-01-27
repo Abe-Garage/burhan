@@ -9,7 +9,7 @@ const menu = async(bot, text, chatId)=>{
               keyboard: [
                 [{ text: 'STATS' }, { text: 'ADD ADMIN' }],
                 [{ text: 'REMOVE USER' }, { text: 'LIST USERS' },{ text :'EXPORT'}],
-                [{ text: 'VIEW LOGS' }, { text: 'REMOVE USERS' }],
+                [{ text: 'VIEW LOGS' }, { text: 'USER REPORT' },{ text: 'INSIGHTS' }],
                 [{ text: 'BACK TO MAIN MENU' }]
               ],
               resize_keyboard: true,
@@ -76,7 +76,7 @@ const menu = async(bot, text, chatId)=>{
             'STATS', 'ADD ADMIN', 'REMOVE USER', 'LIST USERS',
             'VIEW COURSES', 'START COURSE', 'REGISTER', 'PROFILE',
             'TAKE QUIZ', 'CREATE QUIZ', 'BACK TO MAIN MENU', 'FEEDBACK',
-            'ADMIN', 'COURSE', 'QUIZ', 'USER','VIEW LOGS','EXPORT'
+            'ADMIN', 'COURSE', 'QUIZ', 'USER','VIEW LOGS','EXPORT','USER REPORT','INSIGHTS'
           ];
 
           if(!allButtonTexts.includes(text)){
