@@ -152,7 +152,7 @@ module.exports =(bot)=>{
     // Send a message with inline keyboard (callback buttons)
     const options = {
       reply_markup: {
-        inline_keyboard: [
+        keyboard: [
           [{ text: 'Admin', callback_data: 'admin' }],
           [{ text: 'Course', callback_data: 'course' }],
           [{ text: 'Quiz', callback_data: 'quiz' }],
@@ -162,7 +162,7 @@ module.exports =(bot)=>{
       }
     };
     
-    bot.sendMessage(chatId, 'Welcome! Choose an option:', options);
+    bot.sendMessage(chatId, '', options);
   });
 
   
