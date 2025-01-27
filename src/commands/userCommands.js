@@ -269,6 +269,7 @@ module.exports =(bot)=>{
     }
   });
   
+
   bot.on("new_chat_members", (msg) => {
         const chatId = msg.chat.id;
         const newMembers = msg.new_chat_members
