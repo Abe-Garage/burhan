@@ -146,32 +146,51 @@ module.exports =(bot)=>{
   //       }
   //     });
   
+  bot.onText(/\/start/, (msg) => {
+    const chatId = msg.chat.id;
+    
+    // Send a message with inline keyboard (callback buttons)
+    const options = {
+      reply_markup: {
+        inline_keyboard: [
+          [{ text: 'Admin', callback_data: 'admin' }],
+          [{ text: 'Course', callback_data: 'course' }],
+          [{ text: 'Quiz', callback_data: 'quiz' }],
+          [{ text: 'User', callback_data: 'user' }],
+          [{ text: 'Feedback', callback_data: 'feedback' }]
+        ]
+      }
+    };
+    
+    bot.sendMessage(chatId, 'Welcome! Choose an option:', options);
+  });
 
+  
   bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text;
 
     // Define the main menu keyboard
-    const mainMenuKeyboard = {
-        reply_markup: {
-          keyboard: [
-            [{ text: 'Admin', callback_data: 'admin' }],
-            [{ text: 'Course', callback_data: 'course' }],
-            [{ text: 'Quiz', callback_data: 'quiz' }],
-            [{ text: 'User', callback_data: 'user' }],
-            [{ text: 'Feedback', callback_data: 'feedback' }]
-          ],
-          resize_keyboard: true,
-          one_time_keyboard: false,
-        },
-    };
+    // const mainMenuKeyboard = {
+    //     reply_markup: {
+    //       keyboard: [
+    //         [{ text: 'Admin', callback_data: 'admin' }],
+    //         [{ text: 'Course', callback_data: 'course' }],
+    //         [{ text: 'Quiz', callback_data: 'quiz' }],
+    //         [{ text: 'User', callback_data: 'user' }],
+    //         [{ text: 'Feedback', callback_data: 'feedback' }]
+    //       ],
+    //       resize_keyboard: true,
+    //       one_time_keyboard: false,
+    //     },
+    // };
 
-    try {
-        // Example: Send a welcome message
-        await bot.sendMessage(chatId, `Welcome back ${msg.chat.username}`, mainMenuKeyboard);
-    } catch (error) {
-        console.error(`⚠️ Failed to send message: ${error.message}`);
-    }
+    // try {
+    //     // Example: Send a welcome message
+    //     await bot.sendMessage(chatId, `Welcome back ${msg.chat.username}`, mainMenuKeyboard);
+    // } catch (error) {
+    //     console.error(`⚠️ Failed to send message: ${error.message}`);
+    // }
 
     try {
         // Check or create user in database
