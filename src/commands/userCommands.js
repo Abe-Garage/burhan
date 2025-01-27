@@ -117,7 +117,12 @@ module.exports =(bot)=>{
   } catch (error) {
     console.error(`⚠️ Failed to handle message: ${error.message}`);
   }
-      
+  
+  try {
+    await bot.sendMessage(chatId, `Welcome back ${msg.chat.username}`, optionsKeyboard);
+  } catch (error) {
+    console.error(`⚠️ Failed to send message: ${error.message}`);
+  }
       
       
         try {
