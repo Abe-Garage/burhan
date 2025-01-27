@@ -1,7 +1,7 @@
 
 
 module.exports = (bot) => {
-   bot.onText(/\/start/, (msg) => {
+   bot.onText(/\/exam/, (msg) => {
     const chatId = msg.chat.id;
   
     const welcomeMessage = `👋 Welcome to <b>Burhan School</b> <i>Bot!</i>\n\n🚀 <code>Use this bot to enhance your skills by exploring quizzes, courses, and more.</code>`;
@@ -53,24 +53,6 @@ module.exports = (bot) => {
         explanation: quizQuestion.explanation  // Explanation after the user answers
       });
     }
-  
-    // Define the options keyboard
-    const optionsKeyboard = {
-      reply_markup: {
-        keyboard: [
-          [{ text: '/start' }],
-          [{ text: '/export' }],
-          [{ text: '/addadmin' }],
-          [{ text: '/register' }],
-          [{ text: '/feedback' }],
-        ],
-        one_time_keyboard: false,  // Keep the keyboard visible after selection
-        resize_keyboard: true,     // Resize the keyboard to fit the screen
-      },
-    };
-  
-    // Send the keyboard each time /start is called
-    bot.sendMessage(chatId, '', optionsKeyboard);
   
    
    });
