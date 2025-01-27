@@ -371,6 +371,16 @@ ${courseInsights}
   }
 }
 
+function generateProgressBar(percentage) {
+  const totalLength = 20; // Length of the progress bar
+  const filledLength = Math.round(totalLength * (percentage / 100)); // Calculate how much is filled
+  const emptyLength = totalLength - filledLength; // Calculate the empty part
+
+  // Create the progress bar with filled and empty parts
+  const progressBar = '█'.repeat(filledLength) + '▒'.repeat(emptyLength);
+  return progressBar;
+}
+
 const userReport = async (bot, chatId) => {
   bot.sendMessage(chatId, 'Please provide the Telegram ID of the user you want a report for.');
 
