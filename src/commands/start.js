@@ -105,7 +105,7 @@ module.exports = (bot) => {
               console.error("Error sending PDF:", error);
               bot.sendMessage(chatId, "❌ Failed to send the PDF. Please try again.");
             }
-        c}
+        }
 
     });
 }
