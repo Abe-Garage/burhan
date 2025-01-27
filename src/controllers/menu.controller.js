@@ -1,4 +1,5 @@
 
+const { submitFeedback } = require('../services/admin.service')
 
 const menu = async(bot, text, chatId)=>{
 
@@ -54,7 +55,7 @@ const menu = async(bot, text, chatId)=>{
           break;
     
         case 'FEEDBACK':
-          bot.sendMessage(chatId, 'Please provide your feedback:');
+          submitFeedback(bot,chatId)
           break;
     
         case 'BACK TO MAIN MENU':

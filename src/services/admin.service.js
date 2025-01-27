@@ -443,6 +443,42 @@ const userReport = async (bot, chatId) => {
   });
 };
 
+const submitFeedback = async (bot, chatId) => {
+  bot.sendMessage(chatId, 'Please type your feedback and send it.');
+
+  // Listen for the response
+  bot.once('message', async (response) => {
+    const feedbackText = response.text.trim(); // Get the feedback text from the response
+
+    try {
+      // Check if the user is registered
+      const user = await User.findOne({ telegramId: chatId });
+      if (!user) {
+        return bot.sendMessage(chatId, `⚠️ You are not registered. Use /register to create an account.`);
+      }
+
+      // Notify admins
+      const admins = await User.find({ isAdmin: true });
+      const adminMessage = `
+                  📢 *Feedback Received*:
+                  👤 *From*: ${user.firstName || 'User'} (@${user.username || 'N/A'})
+                  📝 *Feedback*: ${feedbackText}
+                  `;
+
+      for (const admin of admins) {
+        bot.sendMessage(admin.telegramId, adminMessage, { parse_mode: 'Markdown' });
+      }
+
+      // Confirm submission to the user
+      bot.sendMessage(chatId, `✅ Feedback submitted successfully. Thank you!`);
+    } catch (error) {
+      console.error(error);
+      bot.sendMessage(chatId, `⚠️ Failed to submit feedback.`);
+    }
+  });
+};
 
 
-module.exports ={ stats , userActivity , addAdmin, removeUser , listUsers , viewlogs , insights ,popularinsights , userReport}
+
+
+module.exports ={ stats , userActivity , addAdmin, removeUser , listUsers , viewlogs , insights ,popularinsights , userReport , submitFeedback}
