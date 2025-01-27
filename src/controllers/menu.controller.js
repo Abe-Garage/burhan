@@ -5,19 +5,19 @@ const menu = async(bot, text, chatId)=>{
 
     switch (text) {
         case 'ADMIN':
-          adminMenu(bot)
+          adminMenu(bot,chatId)
           break;
     
         case 'COURSE':
-           courseMenu(bot)
+           courseMenu(bot,chatId)
           break;
     
         case 'QUIZ':
-           quizMenu(bot)
+           quizMenu(bot,chatId)
           break;
     
         case 'USER':
-           userMenu(bot)
+           userMenu(bot,chatId)
           break;
     
         case 'FEEDBACK':
@@ -25,7 +25,7 @@ const menu = async(bot, text, chatId)=>{
           break;
     
         case 'BACK TO MAIN MENU':
-            backToMainMenu(bot)
+            backToMainMenu(bot,chatId)
           break;
     
         // default:

@@ -1,6 +1,6 @@
 
 
-const adminMenu = (bot) =>{
+const adminMenu = (bot,chatId) =>{
     bot.sendMessage(chatId, 'You selected Admin. What would you like to do?', {
         reply_markup: {
           keyboard: [
@@ -15,7 +15,7 @@ const adminMenu = (bot) =>{
 }
 
 
-const courseMenu =(bot) =>{
+const courseMenu =(bot,chatId) =>{
     bot.sendMessage(chatId, 'You selected Course. What would you like to do?', {
         reply_markup: {
           keyboard: [
@@ -28,7 +28,7 @@ const courseMenu =(bot) =>{
       });
 }
 
-const quizMenu =(bot) =>{
+const quizMenu =(bot,chatId) =>{
     bot.sendMessage(chatId, 'You selected Quiz. What would you like to do?', {
         reply_markup: {
           keyboard: [
@@ -40,7 +40,7 @@ const quizMenu =(bot) =>{
       });
 }
 
-const userMenu =(bot) =>{
+const userMenu =(bot,chatId) =>{
     bot.sendMessage(chatId, 'You selected User. What would you like to do?', {
         reply_markup: {
           keyboard: [
@@ -52,7 +52,7 @@ const userMenu =(bot) =>{
       });
 }
 
-const backToMainMenu =(bot) =>{
+const backToMainMenu =(bot,chatId) =>{
     bot.sendMessage(chatId, 'Returning to Main Menu...', {
         reply_markup: {
           keyboard: [
