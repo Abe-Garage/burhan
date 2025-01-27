@@ -76,7 +76,7 @@ const menu = async(bot, text, chatId)=>{
             'STATS', 'ADD ADMIN', 'REMOVE USER', 'LIST USERS',
             'VIEW COURSES', 'START COURSE', 'REGISTER', 'PROFILE',
             'TAKE QUIZ', 'CREATE QUIZ', 'BACK TO MAIN MENU', 'FEEDBACK',
-            'ADMIN', 'COURSE', 'QUIZ', 'USER','VIEW LOGS'
+            'ADMIN', 'COURSE', 'QUIZ', 'USER','VIEW LOGS','EXPORT'
           ];
 
           if(!allButtonTexts.includes(text)){
