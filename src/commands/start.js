@@ -69,45 +69,99 @@ module.exports = (bot) => {
     // { command: '/export', description: 'Customer list' },
   ]);
   
-   bot.on('callback_query', async (callbackQuery) => {
-        // const userChoice = query.data;
+  //  bot.on('callback_query', async (callbackQuery) => {
+  //       // const userChoice = query.data;
     
-        // // Update the buttons to reflect the selected answer
-        // const options = ["Math", "Science", "English", "History"];
-        // const updatedKeyboard = options.map(option => [
-        //   { text: userChoice === option ? `✅ ${option}` : `🔘 ${option}`, callback_data: option }
-        // ]);
+  //       // // Update the buttons to reflect the selected answer
+  //       // const options = ["Math", "Science", "English", "History"];
+  //       // const updatedKeyboard = options.map(option => [
+  //       //   { text: userChoice === option ? `✅ ${option}` : `🔘 ${option}`, callback_data: option }
+  //       // ]);
     
-        // await bot.editMessageReplyMarkup({ inline_keyboard: updatedKeyboard }, {
-        //   chat_id: query.message.chat.id,
-        //   message_id: query.message.message_id
-        // });
+  //       // await bot.editMessageReplyMarkup({ inline_keyboard: updatedKeyboard }, {
+  //       //   chat_id: query.message.chat.id,
+  //       //   message_id: query.message.message_id
+  //       // });
     
-        // await bot.answerCallbackQuery(query.id, { text: `You selected: ${userChoice}` });
+  //       // await bot.answerCallbackQuery(query.id, { text: `You selected: ${userChoice}` });
 
 
-        const chatId = callbackQuery.message.chat.id;
-        const data = callbackQuery.data;
+  //       const chatId = callbackQuery.message.chat.id;
+  //       const data = callbackQuery.data;
 
-        if (data.startsWith("get_pdf_")) {
-          const courseId = data.split("_")[2];
+  //       if (data.startsWith("get_pdf_")) {
+  //         const courseId = data.split("_")[2];
 
-            try {
-              const course = await Course.findById(courseId);
-              if (course && course.pdfs.length > 0) {
+  //           try {
+  //             const course = await Course.findById(courseId);
+  //             if (course && course.pdfs.length > 0) {
+  //               const pdf = course.pdfs[0]; // Assuming one PDF per course
+  //               const fileBuffer = fs.readFileSync(pdf.url);
+  //               await bot.sendDocument(chatId, fileBuffer, {
+  //                 caption: `📄 Here is the PDF for "${course.title}": ${pdf.name}`,
+  //               });
+  //             } else {
+  //               bot.sendMessage(chatId, "❌ No PDF available for this course.");
+  //             }
+  //           } catch (error) {
+  //             console.error("Error sending PDF:", error);
+  //             bot.sendMessage(chatId, "❌ Failed to send the PDF. Please try again.");
+  //           }
+  //       }
+
+  //   });
+
+
+  bot.on('callback_query', async (callbackQuery) => {
+    const chatId = callbackQuery.message.chat.id;
+    const data = callbackQuery.data;
+
+    if (data.startsWith("get_pdf_")) {
+        const courseId = data.split("_")[2];
+
+        try {
+            const course = await Course.findById(courseId);
+            if (course && course.pdfs.length > 0) {
                 const pdf = course.pdfs[0]; // Assuming one PDF per course
-                const fileBuffer = fs.readFileSync(pdf.url);
-                await bot.sendDocument(chatId, fileBuffer, {
-                  caption: `📄 Here is the PDF for "${course.title}": ${pdf.name}`,
-                });
-              } else {
-                bot.sendMessage(chatId, "❌ No PDF available for this course.");
-              }
-            } catch (error) {
-              console.error("Error sending PDF:", error);
-              bot.sendMessage(chatId, "❌ Failed to send the PDF. Please try again.");
-            }
-        }
 
+                // If the PDF is hosted online (URL), download it
+                if (pdf.url.startsWith('http')) {
+                    const fileBuffer = await downloadFileToBuffer(pdf.url);
+                    await bot.sendDocument(chatId, fileBuffer, {
+                        caption: `📄 Here is the PDF for "${course.title}": ${pdf.name}`,
+                    });
+                } else {
+                    // If it's a local file path, send directly
+                    const fileBuffer = fs.readFileSync(pdf.url);
+                    await bot.sendDocument(chatId, fileBuffer, {
+                        caption: `📄 Here is the PDF for "${course.title}": ${pdf.name}`,
+                    });
+                }
+            } else {
+                bot.sendMessage(chatId, "❌ No PDF available for this course.");
+            }
+        } catch (error) {
+            console.error("Error sending PDF:", error);
+            bot.sendMessage(chatId, "❌ Failed to send the PDF. Please try again.");
+        }
+    }
+});
+
+// Helper function to download a file as a buffer
+function downloadFileToBuffer(url) {
+    return new Promise((resolve, reject) => {
+        https.get(url, (response) => {
+            const chunks = [];
+            response.on('data', (chunk) => {
+                chunks.push(chunk);
+            });
+            response.on('end', () => {
+                const buffer = Buffer.concat(chunks);
+                resolve(buffer);
+            });
+        }).on('error', (err) => {
+            reject(err);
+        });
     });
+}
 }
