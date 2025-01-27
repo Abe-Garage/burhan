@@ -22,7 +22,8 @@ const menu = async(bot, text, chatId)=>{
           bot.sendMessage(chatId, 'You selected Course. What would you like to do?', {
             reply_markup: {
               keyboard: [
-                [{ text: 'VIEW COURSES' }, { text: 'START COURSE' }],
+                [{ text: 'VIEW COURSES' }, { text: 'ADD COURSE' },{text:'UPDATE COURSE'}],
+                [{ text: 'DELETE COURSE' }],
                 [{ text: 'BACK TO MAIN MENU' }]
               ],
               resize_keyboard: true,
@@ -77,7 +78,8 @@ const menu = async(bot, text, chatId)=>{
             'STATS', 'ADD ADMIN', 'REMOVE USER', 'LIST USERS',
             'VIEW COURSES', 'START COURSE', 'REGISTER', 'PROFILE',
             'TAKE QUIZ', 'CREATE QUIZ', 'BACK TO MAIN MENU', 'FEEDBACK',
-            'ADMIN', 'COURSE', 'QUIZ', 'USER','VIEW LOGS','EXPORT','USER REPORT','INSIGHTS'
+            'ADMIN', 'COURSE', 'QUIZ', 'USER','VIEW LOGS','EXPORT','USER REPORT','INSIGHTS',
+            '/start', '/help'
           ];
 
           if(!allButtonTexts.includes(text)){

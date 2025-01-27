@@ -60,10 +60,10 @@ module.exports = (bot) => {
    // Optionally, you can set bot commands here
    bot.setMyCommands([
     { command: '/start', description: 'Start the bot' },
-    { command: '/courses', description: 'Get help with the bot' },
-    { command: '/addadmin', description: 'Get information about the bot' },
-    { command: '/settings', description: 'Adjust your settings' },
-    { command: '/export', description: 'Customer list' },
+    { command: '/help', description: 'Get help with the bot' },
+    // { command: '/addadmin', description: 'Get information about the bot' },
+    // { command: '/settings', description: 'Adjust your settings' },
+    // { command: '/export', description: 'Customer list' },
   ]);
   
    bot.on('callback_query', async (query) => {

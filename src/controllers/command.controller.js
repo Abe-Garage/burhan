@@ -1,6 +1,9 @@
 const { stats, addAdmin, removeUser, listUsers,viewlogs , userReport , insights, popularinsights} = require('../services/admin.service')
 const { backToMainMenu ,register, profile} = require('../services/user.service')
 
+const { addCourse, viewCourses , updateCourse }  = require('../services/course.service')
+const {addQuiz ,deleteQuestion , updateQuiz}  = require('../services/quiz.service')
+
 const commandMap = {
     'STATS': async (bot, chatId) => {
       stats(bot, chatId);  
@@ -49,7 +52,26 @@ const commandMap = {
     },
     'INSIGHTS':async(bot,chatId)=>{
       insights(bot, chatId);
-    }
+    },
+    'ADD COURSE':async(bot,chatId)=>{
+      insights(bot, chatId);
+    },
+    'VIEW COURSES':async(bot,chatId)=>{
+      insights(bot, chatId);
+    },
+    'UPDATE COURSE':async(bot,chatId)=>{
+      insights(bot, chatId);
+    },
+    'ADD QUIZ': async (bot, chatId) => {
+      addQuiz(bot, chatId);
+    },
+   'UPDATE QUIZ': async (bot, chatId) => {
+      updateQuiz(bot, chatId);
+    },
+    'DELETE QUESTION': async (bot, chatId) => {
+      deleteQuestion(bot, chatId);
+    },
+
   };
   
 module.exports = commandMap;
