@@ -105,7 +105,7 @@ module.exports =(bot)=>{
           }
         });
 
-        bot.onText(/\/profile/, async (msg) => {
+      bot.onText(/\/profile/, async (msg) => {
           const chatId = msg.chat.id;
         
           try {
@@ -143,9 +143,8 @@ module.exports =(bot)=>{
         
               ➡️ Use /help for more options or to see detailed stats!
             `;
-        
-           
             
+            bot.sendMessage(chatId, profileMessage, { parse_mode: 'Markdown' });
         
           } catch (error) {
             console.error(error);
