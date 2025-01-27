@@ -1,5 +1,6 @@
 
 const Course = require('../models/Course')
+const fs = require('fs');
 
 module.exports = (bot) => {
    bot.onText(/\/exam/, (msg) => {
@@ -95,7 +96,8 @@ module.exports = (bot) => {
               const course = await Course.findById(courseId);
               if (course && course.pdfs.length > 0) {
                 const pdf = course.pdfs[0]; // Assuming one PDF per course
-                await bot.sendDocument(chatId, pdf._id, {
+                const fileBuffer = fs.readFileSync(pdf.url);
+                await bot.sendDocument(chatId, fileBuffer, {
                   caption: `📄 Here is the PDF for "${course.title}": ${pdf.name}`,
                 });
               } else {
