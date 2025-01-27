@@ -28,7 +28,7 @@ const stats = async(bot,chatId) =>{
     }
 }
 
-const userActivity = async(bot,chatId) =>{
+const userActivity = async(bot,chatId,msg) =>{
     try {
         // Check or create user in database
         const user = await User.findOne({ telegramId: chatId });

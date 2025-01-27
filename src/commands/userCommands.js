@@ -43,7 +43,7 @@ module.exports =(bot)=>{
         }
       
         //track all activities
-        userActivity(chatId);
+        userActivity(bot,chatId,msg);
    
   });
   
