@@ -1,5 +1,5 @@
 const { stats, addAdmin, removeUser, listUsers,viewlogs} = require('../services/admin.service')
-const { backToMainMenu ,register} = require('../services/user.service')
+const { backToMainMenu ,register, profile} = require('../services/user.service')
 
 const commandMap = {
     'STATS': async (bot, chatId) => {
