@@ -154,97 +154,17 @@ module.exports =(bot)=>{
     // Define the main menu keyboard
     const mainMenuKeyboard = {
         reply_markup: {
-            keyboard: [
-                [{ text: 'ADMIN' }, { text: 'COURSE' }],
-                [{ text: 'QUIZ' }, { text: 'USER' }],
-                [{ text: 'FEEDBACK' }],
-            ],
-            resize_keyboard: true,
-            one_time_keyboard: false,
+          keyboard: [
+            [{ text: 'Admin', callback_data: 'admin' }],
+            [{ text: 'Course', callback_data: 'course' }],
+            [{ text: 'Quiz', callback_data: 'quiz' }],
+            [{ text: 'User', callback_data: 'user' }],
+            [{ text: 'Feedback', callback_data: 'feedback' }]
+          ],
+          resize_keyboard: true,
+          one_time_keyboard: false,
         },
     };
-
-    try {
-        // Handle main menu options
-        switch (text) {
-            case 'ADMIN':
-                await bot.sendMessage(chatId, 'ADMIN options:', {
-                    reply_markup: {
-                        keyboard: [
-                            [{ text: 'STATS' }, { text: 'ADD ADMIN' }],
-                            [{ text: 'Remove USER' }, { text: 'LIST USER' }],
-                            [{ text: 'VIEW LOGS/ACTIVITY' }],
-                            [{ text: 'USER REPORT' }, { text: 'INSIGHTS' }],
-                            [{ text: 'EXPORT' }, { text: 'Back to Main Menu' }],
-                        ],
-                        resize_keyboard: true,
-                    },
-                });
-                break;
-
-            case 'COURSE':
-                await bot.sendMessage(chatId, 'COURSE options:', {
-                    reply_markup: {
-                        keyboard: [
-                            [{ text: 'COURSES' }],
-                            [{ text: 'VIEW COURSES' }],
-                            [{ text: 'MARKMODULE' }, { text: 'STARTCOURSE' }],
-                            [{ text: 'Back to Main Menu' }],
-                        ],
-                        resize_keyboard: true,
-                    },
-                });
-                break;
-
-            case 'QUIZ':
-                await bot.sendMessage(chatId, 'QUIZ options:', {
-                    reply_markup: {
-                        keyboard: [
-                            [{ text: 'QUIZZES' }, { text: 'TAKEQUIZ' }],
-                            [{ text: 'CREATEQUIZ' }, { text: 'SUBMITQUIZ' }],
-                            [{ text: 'Back to Main Menu' }],
-                        ],
-                        resize_keyboard: true,
-                    },
-                });
-                break;
-
-            case 'USER':
-                await bot.sendMessage(chatId, 'USER options:', {
-                    reply_markup: {
-                        keyboard: [
-                            [{ text: 'REGISTER' }],
-                            [{ text: 'PROFILE' }],
-                            [{ text: 'EDITPROFILE' }],
-                            [{ text: 'Back to Main Menu' }],
-                        ],
-                        resize_keyboard: true,
-                    },
-                });
-                break;
-
-            case 'FEEDBACK':
-                await bot.sendMessage(chatId, 'Please provide your feedback:');
-                break;
-
-            case 'Back to Main Menu':
-                await bot.sendMessage(chatId, 'Returning to Main Menu...', mainMenuKeyboard);
-                break;
-
-            default:
-                // Convert button text to command and emit specific command events
-                const command = `/${text.replace(/ /g, '').toLowerCase()}`;
-                const commandHandlers = bot._events['text']; // Check for registered command handlers
-                if (commandHandlers && commandHandlers.some((handler) => handler[0].test(command))) {
-                    bot.emit('text', command, msg); // Trigger the registered handler
-                } else {
-                    await bot.sendMessage(chatId, "Command not recognized. Please use the menu.");
-                }
-                break;
-        }
-    } catch (error) {
-        console.error(`⚠️ Failed to handle message: ${error.message}`);
-    }
 
     try {
         // Example: Send a welcome message
@@ -273,18 +193,38 @@ module.exports =(bot)=>{
     } catch (error) {
         console.error(`⚠️ Failed to log user engagement: ${error.message}`);
     }
-});
+  });
 
-      bot.on("new_chat_members", (msg) => {
+ bot.onText(/\/start/, (msg) => {
+  const chatId = msg.chat.id;
+  
+  // Send a message with inline keyboard (callback buttons)
+  const options = {
+    reply_markup: {
+      inline_keyboard: [
+        [{ text: 'Admin', callback_data: 'admin' }],
+        [{ text: 'Course', callback_data: 'course' }],
+        [{ text: 'Quiz', callback_data: 'quiz' }],
+        [{ text: 'User', callback_data: 'user' }],
+        [{ text: 'Feedback', callback_data: 'feedback' }]
+      ]
+    }
+  };
+  
+  bot.sendMessage(chatId, 'Welcome! Choose an option:', options);
+ });
+
+
+  bot.on("new_chat_members", (msg) => {
         const chatId = msg.chat.id;
         const newMembers = msg.new_chat_members
           .map((user) => user.first_name || "New Member")
           .join(", ");
       
         bot.sendMessage(chatId, `Welcome to the group, ${newMembers}! 🎉`);
-       });
+  });
       
-      bot.onText(/\/register/, async (msg) => {
+  bot.onText(/\/register/, async (msg) => {
           const chatId = msg.chat.id;
           const firstName = msg.from.first_name;
           const lastName = msg.from.last_name || '';
@@ -325,9 +265,9 @@ module.exports =(bot)=>{
             console.error(error);
             bot.sendMessage(chatId, `⚠️ Registration failed.`);
           }
-        });
+  });
 
-      bot.onText(/\/profile/, async (msg) => {
+  bot.onText(/\/profile/, async (msg) => {
           const chatId = msg.chat.id;
         
           try {
@@ -372,13 +312,10 @@ module.exports =(bot)=>{
             console.error(error);
             bot.sendMessage(chatId, `⚠️ Failed to fetch profile. Please try again later.`);
           }
-        });
+  });
         
-       
-      //todo edit profile
-    
-      // Handle /editprofile command
-      bot.onText(/\/editprofile (.+)/, async (msg, match) => {
+ //todo edit profile
+  bot.onText(/\/editprofile (.+)/, async (msg, match) => {
               const chatId = msg.chat.id;
               const newUsername = match[1].trim();
 
