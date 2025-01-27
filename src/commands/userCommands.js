@@ -262,18 +262,28 @@ module.exports =(bot)=>{
         break;
   
       default:
-        bot.sendMessage(chatId, 'Invalid option. Returning to Main Menu...', {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'ADMIN' }, { text: 'COURSE' }],
-              [{ text: 'QUIZ' }, { text: 'USER' }],
-              [{ text: 'FEEDBACK' }]
-            ],
-            resize_keyboard: true,
-            one_time_keyboard: false,  // Keep the keyboard visible after selecting
-          }
-        });
-        break;
+        const allButtonTexts = [
+          'STATS', 'ADD ADMIN', 'REMOVE USER', 'LIST USERS',
+          'VIEW COURSES', 'START COURSE', 'REGISTER', 'PROFILE',
+          'TAKE QUIZ', 'CREATE QUIZ', 'BACK TO MAIN MENU', 'FEEDBACK',
+          'ADMIN', 'COURSE', 'QUIZ', 'USER'
+        ];
+
+        if(!allButtonTexts.includes(text)){
+          bot.sendMessage(chatId, 'Invalid option. Returning to Main Menu...', {
+            reply_markup: {
+              keyboard: [
+                [{ text: 'ADMIN' }, { text: 'COURSE' }],
+                [{ text: 'QUIZ' }, { text: 'USER' }],
+                [{ text: 'FEEDBACK' }]
+              ],
+              resize_keyboard: true,
+              one_time_keyboard: false,  // Keep the keyboard visible after selecting
+            }
+          });
+          break;
+        }
+        
     }
 
     try {
@@ -308,7 +318,7 @@ module.exports =(bot)=>{
         bot.sendMessage(chatId, `Welcome to the group, ${newMembers}! 🎉`);
   });
       
-  bot.onText(/\/register/, async (msg) => {
+  bot.onText(/REGISTER/, async (msg) => {
           const chatId = msg.chat.id;
           const firstName = msg.from.first_name;
           const lastName = msg.from.last_name || '';
@@ -351,7 +361,7 @@ module.exports =(bot)=>{
           }
   });
 
-  bot.onText(/\/profile/, async (msg) => {
+  bot.onText(/PROFILE/, async (msg) => {
           const chatId = msg.chat.id;
         
           try {
