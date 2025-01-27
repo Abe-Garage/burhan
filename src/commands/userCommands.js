@@ -36,7 +36,7 @@ module.exports =(bot)=>{
         const text = msg.text;
         
         //
-        Menu(bot,text)
+        Menu(bot,text,chatId)
 
         if (commandMap[text]) {
           await commandMap[text](bot, chatId);

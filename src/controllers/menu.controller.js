@@ -1,6 +1,6 @@
 
 
-const menu = async(bot, text)=>{
+const menu = async(bot, text,chatId)=>{
 
     switch (text) {
         case 'ADMIN':
