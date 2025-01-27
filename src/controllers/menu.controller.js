@@ -79,7 +79,9 @@ const menu = async(bot, text, chatId)=>{
             'VIEW COURSES', 'START COURSE', 'REGISTER', 'PROFILE',
             'TAKE QUIZ', 'CREATE QUIZ', 'BACK TO MAIN MENU', 'FEEDBACK',
             'ADMIN', 'COURSE', 'QUIZ', 'USER','VIEW LOGS','EXPORT','USER REPORT','INSIGHTS',
-            '/start', '/help'
+            '/start', '/help',
+            'ADD QUIZ', 'UPDATE QUIZ' ,'DELETE QUESTION',
+            'ADD COURSE' ,'VIEW COURSES' , 'UPDATE COURSE'
           ];
 
           if(!allButtonTexts.includes(text)){
