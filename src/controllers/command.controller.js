@@ -54,13 +54,13 @@ const commandMap = {
       insights(bot, chatId);
     },
     'ADD COURSE':async(bot,chatId)=>{
-      insights(bot, chatId);
+      addCourse(bot, chatId);
     },
     'VIEW COURSES':async(bot,chatId)=>{
-      insights(bot, chatId);
+      viewCourses(bot, chatId);
     },
     'UPDATE COURSE':async(bot,chatId)=>{
-      insights(bot, chatId);
+      updateCourse(bot, chatId);
     },
     'ADD QUIZ': async (bot, chatId) => {
       addQuiz(bot, chatId);
