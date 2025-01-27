@@ -8,7 +8,7 @@ const Course = require('../models/Course')
 
 module.exports =(bot)=>{
       bot.on('message', async (msg) => {
-        // const chatId = msg.chat.id;
+        const chatId = msg.chat.id;
       
         // // Define the options keyboard
         // const optionsKeyboard = {
@@ -117,7 +117,7 @@ module.exports =(bot)=>{
   } catch (error) {
     console.error(`⚠️ Failed to handle message: ${error.message}`);
   }
-  
+
   try {
     await bot.sendMessage(chatId, `Welcome back ${msg.chat.username}`, optionsKeyboard);
   } catch (error) {
