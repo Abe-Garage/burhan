@@ -153,14 +153,15 @@ module.exports =(bot)=>{
     const options = {
       reply_markup: {
         keyboard: [
-          [{ text: 'Admin', callback_data: 'admin' }],
-          [{ text: 'Course', callback_data: 'course' }],
-          [{ text: 'Quiz', callback_data: 'quiz' }],
-          [{ text: 'User', callback_data: 'user' }],
-          [{ text: 'Feedback', callback_data: 'feedback' }]
-        ]
+          [{ text: '👨‍💻 ADMIN' }, { text: '📚 COURSE' }],
+          [{ text: '📝 QUIZ' }, { text: '👤 USER' }],
+          [{ text: '💬 FEEDBACK' }]
+        ],
+        resize_keyboard: true,
+        one_time_keyboard: false,  // Keep the keyboard visible after selecting
       }
     };
+    
     
     bot.sendMessage(chatId, '', options);
   });
@@ -192,6 +193,89 @@ module.exports =(bot)=>{
     //     console.error(`⚠️ Failed to send message: ${error.message}`);
     // }
 
+    switch (text) {
+      case 'ADMIN':
+        bot.sendMessage(chatId, 'You selected Admin. What would you like to do?', {
+          reply_markup: {
+            keyboard: [
+              [{ text: 'STATS' }, { text: 'ADD ADMIN' }],
+              [{ text: 'REMOVE USER' }, { text: 'LIST USERS' }],
+              [{ text: 'BACK TO MAIN MENU' }]
+            ],
+            resize_keyboard: true,
+          }
+        });
+        break;
+  
+      case 'COURSE':
+        bot.sendMessage(chatId, 'You selected Course. What would you like to do?', {
+          reply_markup: {
+            keyboard: [
+              [{ text: 'VIEW COURSES' }, { text: 'START COURSE' }],
+              [{ text: 'BACK TO MAIN MENU' }]
+            ],
+            resize_keyboard: true,
+          }
+        });
+        break;
+  
+      case 'QUIZ':
+        bot.sendMessage(chatId, 'You selected Quiz. What would you like to do?', {
+          reply_markup: {
+            keyboard: [
+              [{ text: 'TAKE QUIZ' }, { text: 'CREATE QUIZ' }],
+              [{ text: 'BACK TO MAIN MENU' }]
+            ],
+            resize_keyboard: true,
+          }
+        });
+        break;
+  
+      case 'USER':
+        bot.sendMessage(chatId, 'You selected User. What would you like to do?', {
+          reply_markup: {
+            keyboard: [
+              [{ text: 'REGISTER' }, { text: 'PROFILE' }],
+              [{ text: 'BACK TO MAIN MENU' }]
+            ],
+            resize_keyboard: true,
+          }
+        });
+        break;
+  
+      case 'FEEDBACK':
+        bot.sendMessage(chatId, 'Please provide your feedback:');
+        break;
+  
+      case 'BACK TO MAIN MENU':
+        bot.sendMessage(chatId, 'Returning to Main Menu...', {
+          reply_markup: {
+            keyboard: [
+              [{ text: 'ADMIN' }, { text: 'COURSE' }],
+              [{ text: 'QUIZ' }, { text: 'USER' }],
+              [{ text: 'FEEDBACK' }]
+            ],
+            resize_keyboard: true,
+            one_time_keyboard: false,  // Keep the keyboard visible after selecting
+          }
+        });
+        break;
+  
+      default:
+        bot.sendMessage(chatId, 'Invalid option. Returning to Main Menu...', {
+          reply_markup: {
+            keyboard: [
+              [{ text: 'ADMIN' }, { text: 'COURSE' }],
+              [{ text: 'QUIZ' }, { text: 'USER' }],
+              [{ text: 'FEEDBACK' }]
+            ],
+            resize_keyboard: true,
+            one_time_keyboard: false,  // Keep the keyboard visible after selecting
+          }
+        });
+        break;
+    }
+
     try {
         // Check or create user in database
         const user = await User.findOne({ telegramId: chatId });
@@ -211,80 +295,6 @@ module.exports =(bot)=>{
         });
     } catch (error) {
         console.error(`⚠️ Failed to log user engagement: ${error.message}`);
-    }
-  });
-
-  bot.on('callback_query', (callbackQuery) => {
-    const message = callbackQuery.message;
-    const chatId = message.chat.id;
-    const callbackData = callbackQuery.data;
-  
-    switch (callbackData) {
-      case 'admin':
-        bot.sendMessage(chatId, 'You selected Admin. What would you like to do?', {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'Stats' }, { text: 'Add Admin' }],
-              [{ text: 'Remove User' }, { text: 'List User' }],
-              [{ text: 'Back to Main Menu' }]
-            ],
-            resize_keyboard: true
-          }
-        });
-        break;
-  
-      case 'course':
-        bot.sendMessage(chatId, 'You selected Course. What would you like to do?', {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'View Courses' }, { text: 'Start Course' }],
-              [{ text: 'Back to Main Menu' }]
-            ],
-            resize_keyboard: true
-          }
-        });
-        break;
-  
-      case 'quiz':
-        bot.sendMessage(chatId, 'You selected Quiz. What would you like to do?', {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'Take Quiz' }, { text: 'Create Quiz' }],
-              [{ text: 'Back to Main Menu' }]
-            ],
-            resize_keyboard: true
-          }
-        });
-        break;
-  
-      case 'user':
-        bot.sendMessage(chatId, 'You selected User. What would you like to do?', {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'Register' }, { text: 'Profile' }],
-              [{ text: 'Back to Main Menu' }]
-            ],
-            resize_keyboard: true
-          }
-        });
-        break;
-  
-      case 'feedback':
-        bot.sendMessage(chatId, 'Please provide your feedback:');
-        break;
-  
-      default:
-        bot.sendMessage(chatId, 'Invalid option. Returning to Main Menu...', {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'Admin' }, { text: 'Course' }],
-              [{ text: 'Quiz' }, { text: 'User' }],
-              [{ text: 'Feedback' }]
-            ],
-            resize_keyboard: true
-          }
-        });
-        break;
     }
   });
   
