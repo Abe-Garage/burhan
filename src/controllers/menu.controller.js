@@ -3,7 +3,7 @@
 const menu = async(bot, text, chatId)=>{
 
     switch (text) {
-        case 'ADMIN':
+        case '👨‍💻 ADMIN':
           bot.sendMessage(chatId, 'You selected Admin. What would you like to do?', {
             reply_markup: {
               keyboard: [
@@ -17,7 +17,7 @@ const menu = async(bot, text, chatId)=>{
           });
           break;
     
-        case 'COURSE':
+        case '📚 COURSE':
           bot.sendMessage(chatId, 'You selected Course. What would you like to do?', {
             reply_markup: {
               keyboard: [
@@ -29,7 +29,7 @@ const menu = async(bot, text, chatId)=>{
           });
           break;
     
-        case 'QUIZ':
+        case '📝 QUIZ':
           bot.sendMessage(chatId, 'You selected Quiz. What would you like to do?', {
             reply_markup: {
               keyboard: [
@@ -41,7 +41,7 @@ const menu = async(bot, text, chatId)=>{
           });
           break;
     
-        case 'USER':
+        case '👤 USER':
           bot.sendMessage(chatId, 'You selected User. What would you like to do?', {
             reply_markup: {
               keyboard: [
@@ -53,7 +53,7 @@ const menu = async(bot, text, chatId)=>{
           });
           break;
     
-        case 'FEEDBACK':
+        case '💬 FEEDBACK':
           bot.sendMessage(chatId, 'Please provide your feedback:');
           break;
     
