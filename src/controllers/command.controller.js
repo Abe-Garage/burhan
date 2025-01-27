@@ -1,5 +1,5 @@
 const { stats, addAdmin, removeUser, listUsers,viewlogs} = require('../services/admin.service')
-const backToMainMenu = require('../services/user.service')
+const { backToMainMenu ,register} = require('../services/user.service')
 
 const commandMap = {
     'STATS': async (bot, chatId) => {
@@ -28,13 +28,13 @@ const commandMap = {
     
       startCourse(bot, chatId);
     },
-    'REGISTER': async (bot, chatId) => {
+    'REGISTER': async (bot,chatId, msg) => {
    
-      register(bot, chatId);
+      register(bot, msg);
     },
-    'PROFILE': async (bot, chatId) => {
+    'PROFILE': async (bot, chatId, msg) => {
     
-      profile(bot, chatId);
+      profile(bot, msg);
     },
     'TAKE QUIZ': async (bot, chatId) => {
     
