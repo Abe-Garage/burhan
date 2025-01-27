@@ -1,4 +1,4 @@
-const { stats, addAdmin, removeUser, listUsers,viewlogs} = require('../services/admin.service')
+const { stats, addAdmin, removeUser, listUsers,viewlogs , userReport , insights, popularinsights} = require('../services/admin.service')
 const { backToMainMenu ,register, profile} = require('../services/user.service')
 
 const commandMap = {
