@@ -5,147 +5,11 @@ const Log = require('../models/Log');
 const { errorHandler } = require('../utils/errorHandler');
 const mongoose = require('mongoose');
 const Course = require('../models/Course')
-const { stats} = require('../controllers/admin.controller')
+const {userActivity} = require('../services/admin.service')
+const Menu = require('../controllers/menu.controller')
+const commandMap = require('../controllers/command.controller')
 
 module.exports =(bot)=>{
-  //     bot.on('message', async (msg) => {
-  //       const chatId = msg.chat.id;
-      
-  //       // // Define the options keyboard
-  //       // const optionsKeyboard = {
-  //       //   reply_markup: {
-  //       //     keyboard: [
-  //       //       [{ text: '/start' }],
-  //       //       [{ text: '/export' }],
-  //       //       [{ text: '/addadmin' }],
-  //       //       [{ text: '/register' }],
-  //       //       [{ text: '/feedback' }],
-  //       //     ],
-  //       //     one_time_keyboard: false,  // Keep the keyboard visible after selection
-  //       //     resize_keyboard: true,     // Resize the keyboard to fit the screen
-  //       //   },
-  //       // };
-
-  //       const text = msg.text;
-
-  // // Define the main menu keyboard
-  // const mainMenuKeyboard = {
-  //   reply_markup: {
-  //     keyboard: [
-  //       [{ text: 'ADMIN' }, { text: 'COURSE' }],
-  //       [{ text: 'QUIZ' }, { text: 'USER' }],
-  //       [{ text: 'FEEDBACK' }],
-  //     ],
-  //     resize_keyboard: true,
-  //     one_time_keyboard: false,
-  //   },
-  // };
-
-  // try {
-  //   // Handle main menu options
-  //   switch (text) {
-  //     case 'ADMIN':
-  //       await bot.sendMessage(chatId, 'ADMIN options:', {
-  //         reply_markup: {
-  //           keyboard: [
-  //             [{ text: 'STATS' }, { text: 'ADD ADMIN' }],
-  //             [{ text: 'Remove USER' }, { text: 'LIST USER' }],
-  //             [{ text: 'VIEW LOGS/ACTIVITY' }],
-  //             [{ text: 'USER REPORT' }, { text: 'INSIGHTS' }],
-  //             [{ text: 'EXPORT' }, { text: 'Back to Main Menu' }],
-  //           ],
-  //           resize_keyboard: true,
-  //         },
-  //       });
-  //       break;
-
-  //     case 'COURSE':
-  //       await bot.sendMessage(chatId, 'COURSE options:', {
-  //         reply_markup: {
-  //           keyboard: [
-  //             [{ text: 'COURSES' }],
-  //             [{ text: 'VIEW COURSES' }],
-  //             [{ text: 'MARKMODULE' }, { text: 'STARTCOURSE' }],
-  //             [{ text: 'Back to Main Menu' }],
-  //           ],
-  //           resize_keyboard: true,
-  //         },
-  //       });
-  //       break;
-
-  //     case 'QUIZ':
-  //       await bot.sendMessage(chatId, 'QUIZ options:', {
-  //         reply_markup: {
-  //           keyboard: [
-  //             [{ text: 'QUIZZES' }, { text: 'TAKEQUIZ' }],
-  //             [{ text: 'CREATEQUIZ' }, { text: 'SUBMITQUIZ' }],
-  //             [{ text: 'Back to Main Menu' }],
-  //           ],
-  //           resize_keyboard: true,
-  //         },
-  //       });
-  //       break;
-
-  //     case 'USER':
-  //       await bot.sendMessage(chatId, 'USER options:', {
-  //         reply_markup: {
-  //           keyboard: [
-  //             [{ text: 'REGISTER' }],
-  //             [{ text: 'PROFILE' }],
-  //             [{ text: 'EDITPROFILE' }],
-  //             [{ text: 'Back to Main Menu' }],
-  //           ],
-  //           resize_keyboard: true,
-  //         },
-  //       });
-  //       break;
-
-  //     case 'FEEDBACK':
-  //       await bot.sendMessage(chatId, 'Please provide your feedback:');
-  //       break;
-
-  //     case 'Back to Main Menu':
-  //       await bot.sendMessage(chatId, 'Returning to Main Menu...', mainMenuKeyboard);
-  //       break;
-
-  //     default:
-  //       // Generalized: Convert button text to command and re-emit the message
-  //       const command = `/${text.replace(/ /g, '').toLowerCase()}`;
-  //       msg.text = command; // Set the command text
-  //       bot.emit('message', msg); // Re-emit the message event
-  //       break;
-  //   }
-  // } catch (error) {
-  //   console.error(`⚠️ Failed to handle message: ${error.message}`);
-  // }
-
-  // try {
-  //   await bot.sendMessage(chatId, `Welcome back ${msg.chat.username}`, optionsKeyboard);
-  // } catch (error) {
-  //   console.error(`⚠️ Failed to send message: ${error.message}`);
-  // }
-      
-      
-  //       try {
-  //         const user = await User.findOne({ telegramId: chatId });
-  //         if (!user) {
-  //           await User.create({
-  //             telegramId: chatId,
-  //             username: msg.chat.username || '',
-  //             firstName: msg.chat.first_name || '',
-  //             lastName: msg.chat.last_name || '',
-  //           });
-  //         }
-      
-  //         // Log user interaction
-  //         await Log.create({
-  //           action: msg.text,
-  //           userId: user._id
-  //         });
-  //       } catch (error) {
-  //         console.error(`⚠️ Failed to log user engagement: ${error.message}`);
-  //       }
-  //     });
   
   bot.onText(/\/start/, (msg) => {
     const chatId = msg.chat.id;
@@ -166,132 +30,21 @@ module.exports =(bot)=>{
     
     bot.sendMessage(chatId, '', options);
   });
-
-  
+ 
   bot.on('message', async (msg) => {
-    const chatId = msg.chat.id;
-    const text = msg.text;
-    
-
-   
-
-    switch (text) {
-      case 'ADMIN':
-        bot.sendMessage(chatId, 'You selected Admin. What would you like to do?', {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'STATS' }, { text: 'ADD ADMIN' }],
-              [{ text: 'REMOVE USER' }, { text: 'LIST USERS' }],
-              [{ text: 'BACK TO MAIN MENU' }]
-            ],
-            resize_keyboard: true,
-          }
-        });
-        break;
-  
-      case 'COURSE':
-        bot.sendMessage(chatId, 'You selected Course. What would you like to do?', {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'VIEW COURSES' }, { text: 'START COURSE' }],
-              [{ text: 'BACK TO MAIN MENU' }]
-            ],
-            resize_keyboard: true,
-          }
-        });
-        break;
-  
-      case 'QUIZ':
-        bot.sendMessage(chatId, 'You selected Quiz. What would you like to do?', {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'TAKE QUIZ' }, { text: 'CREATE QUIZ' }],
-              [{ text: 'BACK TO MAIN MENU' }]
-            ],
-            resize_keyboard: true,
-          }
-        });
-        break;
-  
-      case 'USER':
-        bot.sendMessage(chatId, 'You selected User. What would you like to do?', {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'REGISTER' }, { text: 'PROFILE' }],
-              [{ text: 'BACK TO MAIN MENU' }]
-            ],
-            resize_keyboard: true,
-          }
-        });
-        break;
-  
-      case 'FEEDBACK':
-        bot.sendMessage(chatId, 'Please provide your feedback:');
-        break;
-  
-      case 'BACK TO MAIN MENU':
-        bot.sendMessage(chatId, 'Returning to Main Menu...', {
-          reply_markup: {
-            keyboard: [
-              [{ text: 'ADMIN' }, { text: 'COURSE' }],
-              [{ text: 'QUIZ' }, { text: 'USER' }],
-              [{ text: 'FEEDBACK' }]
-            ],
-            resize_keyboard: true,
-            one_time_keyboard: false,  // Keep the keyboard visible after selecting
-          }
-        });
-        break;
-  
-      default:
-        const allButtonTexts = [
-          'STATS', 'ADD ADMIN', 'REMOVE USER', 'LIST USERS',
-          'VIEW COURSES', 'START COURSE', 'REGISTER', 'PROFILE',
-          'TAKE QUIZ', 'CREATE QUIZ', 'BACK TO MAIN MENU', 'FEEDBACK',
-          'ADMIN', 'COURSE', 'QUIZ', 'USER'
-        ];
-
-        if(!allButtonTexts.includes(text)){
-          bot.sendMessage(chatId, 'Invalid option. Returning to Main Menu...', {
-            reply_markup: {
-              keyboard: [
-                [{ text: 'ADMIN' }, { text: 'COURSE' }],
-                [{ text: 'QUIZ' }, { text: 'USER' }],
-                [{ text: 'FEEDBACK' }]
-              ],
-              resize_keyboard: true,
-              one_time_keyboard: false,  // Keep the keyboard visible after selecting
-            }
-          });
-          break;
-        }
+        const chatId = msg.chat.id;
+        const text = msg.text;
         
-    }
+        //
+        Menu(bot,text)
 
-    if(text === 'STATS'){
-           stats(bot, chatId)
-    }
-
-    try {
-        // Check or create user in database
-        const user = await User.findOne({ telegramId: chatId });
-        if (!user) {
-            await User.create({
-                telegramId: chatId,
-                username: msg.chat.username || '',
-                firstName: msg.chat.first_name || '',
-                lastName: msg.chat.last_name || '',
-            });
+        if (commandMap[text]) {
+          await commandMap[text](bot, chatId);
         }
-
-        // Log user interaction
-        await Log.create({
-            action: msg.text,
-            userId: user ? user._id : null,
-        });
-    } catch (error) {
-        console.error(`⚠️ Failed to log user engagement: ${error.message}`);
-    }
+      
+        //track all activities
+        userActivity(chatId);
+   
   });
   
 
