@@ -44,26 +44,7 @@ const commandMap = {
       
       createQuiz(bot, chatId);
     },
-    'BACK TO MAIN MENU': async (bot, chatId) => {
-     
-      backToMainMenu(bot, chatId);
-    },
-    'FEEDBACK': async (bot, chatId) => {
-     
-      feedback(bot, chatId);
-    },
-    'ADMIN': async (bot, chatId) => {
-      
-      admin(bot, chatId);
-    },
-    'COURSE': async (bot, chatId) => {
     
-      course(bot, chatId);
-    },
-    'QUIZ': async (bot, chatId) => {
-     
-      quiz(bot, chatId);
-    },
     'USER': async (bot, chatId) => {
      
       user(bot, chatId);
