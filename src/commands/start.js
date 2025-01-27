@@ -1,6 +1,7 @@
 
 const Course = require('../models/Course')
 const fs = require('fs');
+const https = require('https');
 
 module.exports = (bot) => {
    bot.onText(/\/exam/, (msg) => {
