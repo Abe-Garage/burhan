@@ -67,29 +67,156 @@ const addCourse = async (bot, chatId) => {
     });
   };
  
-const viewCourses = async (bot, chatId) => {
-    try {
-      const courses = await Course.find();
-      if (courses.length === 0) {
-        return bot.sendMessage(chatId, '⚠️ No courses available.');
-      }
+// const viewCourses = async (bot, chatId) => {
+//     try {
+//       const courses = await Course.find();
+//       if (courses.length === 0) {
+//         return bot.sendMessage(chatId, '⚠️ No courses available.');
+//       }
   
-      let message = '📚 Available Courses:\n';
-      courses.forEach((course, index) => {
-        message += `${index + 1}. ${course.title} - ${course.description || 'No description'}\n`;
-        if (course.pdfs.length > 0) {
-          message += `   📄 PDF: ${course.pdfs[0].name}\n`; // Assuming each course has one PDF for now
-        }
-      });
+//       let message = '📚 Available Courses:\n';
+//       courses.forEach((course, index) => {
+//         message += `${index + 1}. ${course.title} - ${course.description || 'No description'}\n`;
+//         if (course.pdfs.length > 0) {
+//           message += `   📄 PDF: ${course.pdfs[0].name}\n`; // Assuming each course has one PDF for now
+//         }
+//       });
   
-      bot.sendMessage(chatId, message);
-    } catch (error) {
-      console.error(error);
-      bot.sendMessage(chatId, '⚠️ Failed to retrieve courses.');
-    }
-  };
+//       bot.sendMessage(chatId, message);
+//     } catch (error) {
+//       console.error(error);
+//       bot.sendMessage(chatId, '⚠️ Failed to retrieve courses.');
+//     }
+//   };
  
-  
+
+// const viewCourses = async (bot, chatId) => {
+//   try {
+//     const courses = await Course.find();
+//     if (courses.length === 0) {
+//       return bot.sendMessage(chatId, "⚠️ No courses available.");
+//     }
+
+//     // Prepare inline keyboard
+//     const inlineKeyboard = courses.map((course, index) => [
+//       {
+//         text: `📄 ${course.title} - GET PDF`,
+//         callback_data: `get_pdf_${index}`, // Use course index as identifier
+//       },
+//     ]);
+
+//     let message = "📚 Available Courses:\n";
+//     courses.forEach((course, index) => {
+//       message += `${index + 1}. ${course.title} - ${course.description || "No description"}\n`;
+//     });
+
+//     // Send message with inline keyboard
+//     bot.sendMessage(chatId, message, {
+//       reply_markup: {
+//         inline_keyboard: inlineKeyboard,
+//       },
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     bot.sendMessage(chatId, "⚠️ Failed to retrieve courses.");
+//   }
+
+//   // Handle the callback for "GET PDF"
+// bot.on("callback_query", async (callbackQuery) => {
+//   const chatId = callbackQuery.message.chat.id;
+//   const data = callbackQuery.data;
+
+//   if (data.startsWith("get_pdf_")) {
+//     const courseIndex = parseInt(data.split("_")[2], 10);
+
+//     try {
+//       const courses = await Course.find();
+//       const selectedCourse = courses[courseIndex];
+
+//       if (selectedCourse && selectedCourse.pdfs.length > 0) {
+//         const pdf = selectedCourse.pdfs[0]; // Assuming one PDF per course
+//         await bot.sendDocument(chatId, pdf.url, {
+//           caption: `📄 Here is the PDF for "${selectedCourse.title}": ${pdf.name}`,
+//         });
+//       } else {
+//         bot.sendMessage(chatId, "❌ No PDF available for this course.");
+//       }
+//     } catch (error) {
+//       console.error("Error sending PDF:", error);
+//       bot.sendMessage(chatId, "❌ Failed to send the PDF. Please try again.");
+//     }
+//   }
+
+//   // Acknowledge callback query
+//   bot.answerCallbackQuery(callbackQuery.id);
+// });
+
+// };
+
+
+
+const viewCourses = async (bot, chatId) => {
+  try {
+    const courses = await Course.find();
+    if (courses.length === 0) {
+      return bot.sendMessage(chatId, "⚠️ No courses available.");
+    }
+
+    // Prepare inline keyboard with unique course ids
+    const inlineKeyboard = courses.map((course) => [
+      {
+        text: `📄 ${course.title} - GET PDF`,
+        callback_data: `get_pdf_${course._id}`, // Use course _id as identifier
+      },
+    ]);
+
+    let message = "📚 Available Courses:\n";
+    courses.forEach((course, index) => {
+      message += `${index + 1}. ${course.title} - ${course.description || "No description"}\n`;
+    });
+
+    // Send message with inline keyboard
+    bot.sendMessage(chatId, message, {
+      reply_markup: {
+        inline_keyboard: inlineKeyboard,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    bot.sendMessage(chatId, "⚠️ Failed to retrieve courses.");
+  }
+};
+
+
+// Handle callback queries separately (outside viewCourses)
+const handleCallbackQuery = async (bot, callbackQuery) => {
+  const chatId = callbackQuery.message.chat.id;
+  const data = callbackQuery.data;
+
+  if (data.startsWith("get_pdf_")) {
+    const courseId = data.split("_")[2];
+
+    try {
+      const course = await Course.findById(courseId);
+      if (course && course.pdfs.length > 0) {
+        const pdf = course.pdfs[0]; // Assuming one PDF per course
+        await bot.sendDocument(chatId, pdf.url, {
+          caption: `📄 Here is the PDF for "${course.title}": ${pdf.name}`,
+        });
+      } else {
+        bot.sendMessage(chatId, "❌ No PDF available for this course.");
+      }
+    } catch (error) {
+      console.error("Error sending PDF:", error);
+      bot.sendMessage(chatId, "❌ Failed to send the PDF. Please try again.");
+    }
+  }
+
+  // Acknowledge callback query
+bot.answerCallbackQuery(callbackQuery.id);
+};
+
+
 const updateCourse = async (bot, chatId) => {
     
     const admin = await User.findOne({ telegramId: chatId });
@@ -162,4 +289,4 @@ const deleteCourse = async (bot, chatId) => {
   };
   
 
-module.exports ={ addCourse , viewCourses, updateCourse}
+module.exports ={ addCourse , viewCourses, updateCourse , handleCallbackQuery}

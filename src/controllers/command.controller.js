@@ -1,7 +1,7 @@
 const { stats, addAdmin, removeUser, listUsers,viewlogs , userReport , insights, popularinsights} = require('../services/admin.service')
 const { backToMainMenu ,register, profile} = require('../services/user.service')
 
-const { addCourse, viewCourses , updateCourse }  = require('../services/course.service')
+const { addCourse, viewCourses , updateCourse,handleCallbackQuery}  = require('../services/course.service')
 const {addQuiz ,deleteQuestion , updateQuiz}  = require('../services/quiz.service')
 
 const commandMap = {
@@ -26,6 +26,8 @@ const commandMap = {
     'VIEW COURSES': async (bot, chatId) => {
  
       viewCourses(bot, chatId);
+      // Listen for callback queries (this only needs to be done once)
+      bot.on('callback_query', (callbackQuery) => handleCallbackQuery(bot, callbackQuery));
     },
     'START COURSE': async (bot, chatId) => {
     
