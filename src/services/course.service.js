@@ -289,4 +289,4 @@ const deleteCourse = async (bot, chatId) => {
   };
   
 
-module.exports ={ addCourse , viewCourses, updateCourse , handleCallbackQuery}
+module.exports ={ addCourse , viewCourses, updateCourse }
