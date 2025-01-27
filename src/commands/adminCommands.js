@@ -24,7 +24,7 @@ function generateProgressBar(percentage) {
 
 module.exports = (bot) => {
     // View stats
-    bot.onText(/\/stats/, async (msg) => {
+    bot.onText(/STATS/, async (msg) => {
         const chatId = msg.chat.id;
 
         try {
@@ -123,7 +123,7 @@ module.exports = (bot) => {
       }
     });
 
-  bot.onText(/\/listusers/, async (msg) => {
+  bot.onText(/LISTUSERS/, async (msg) => {
       const chatId = msg.chat.id;
   
       try {
@@ -179,7 +179,7 @@ module.exports = (bot) => {
     //   }
     // });
 
-    bot.onText(/\/viewlogs/, async (msg) => {
+    bot.onText(/VIEWLOGS/, async (msg) => {
       const chatId = msg.chat.id;
     
       try {
@@ -578,7 +578,7 @@ bot.onText(/\/popularinsights/, async (msg) => {
     });
   
   
-bot.onText(/\/export/, async (msg) => {
+bot.onText(/EXPORT/, async (msg) => {
       const chatId = msg.chat.id;
     
       try {
