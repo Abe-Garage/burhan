@@ -35,7 +35,7 @@ const menu = async(bot, text, chatId)=>{
           bot.sendMessage(chatId, 'You selected Quiz. What would you like to do?', {
             reply_markup: {
               keyboard: [
-                [{ text: 'TAKE QUIZ' }, { text: 'CREATE QUIZ' }],
+                [{ text: 'ADD QUIZ' }, { text: 'UPDATE QUIZ' }],
                 [{ text: 'BACK TO MAIN MENU' }]
               ],
               resize_keyboard: true,
