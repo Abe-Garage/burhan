@@ -24,29 +24,29 @@ function generateProgressBar(percentage) {
 
 module.exports = (bot) => {
     // View stats
-    bot.onText(/STATS/, async (msg) => {
-        const chatId = msg.chat.id;
+    // bot.onText(/STATS/, async (msg) => {
+    //     const chatId = msg.chat.id;
 
-        try {
-            const admin = await User.findOne({ telegramId: chatId });
-            if (!admin?.isAdmin) {
-                return bot.sendMessage(chatId, "⚠️ You do not have admin privileges.");
-            }
+    //     try {
+    //         const admin = await User.findOne({ telegramId: chatId });
+    //         if (!admin?.isAdmin) {
+    //             return bot.sendMessage(chatId, "⚠️ You do not have admin privileges.");
+    //         }
 
-            const totalUsers = await User.countDocuments();
-            const totalQuizzes = await Quiz.countDocuments();
-            const totalCourses = await Course.countDocuments();
+    //         const totalUsers = await User.countDocuments();
+    //         const totalQuizzes = await Quiz.countDocuments();
+    //         const totalCourses = await Course.countDocuments();
 
-            bot.sendMessage(chatId, `
-                          📊 Platform Statistics:
-                          👥 Total Users: ${totalUsers}
-                          📋 Total Quizzes: ${totalQuizzes}
-                          📚 Total Courses: ${totalCourses}
-                         `);
-        } catch (error) {
-            errorHandler(error, "⚠️ Failed to fetch statistics.", chatId, bot);
-        }
-    });
+    //         bot.sendMessage(chatId, `
+    //                       📊 Platform Statistics:
+    //                       👥 Total Users: ${totalUsers}
+    //                       📋 Total Quizzes: ${totalQuizzes}
+    //                       📚 Total Courses: ${totalCourses}
+    //                      `);
+    //     } catch (error) {
+    //         errorHandler(error, "⚠️ Failed to fetch statistics.", chatId, bot);
+    //     }
+    // });
 
     bot.onText(/\/feedback (.+)/, async (msg, match) => {
         const chatId = msg.chat.id;

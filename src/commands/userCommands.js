@@ -5,6 +5,7 @@ const Log = require('../models/Log');
 const { errorHandler } = require('../utils/errorHandler');
 const mongoose = require('mongoose');
 const Course = require('../models/Course')
+const { stats} = require('../controllers/admin.controller')
 
 module.exports =(bot)=>{
   //     bot.on('message', async (msg) => {
@@ -170,28 +171,9 @@ module.exports =(bot)=>{
   bot.on('message', async (msg) => {
     const chatId = msg.chat.id;
     const text = msg.text;
+    
 
-    // Define the main menu keyboard
-    // const mainMenuKeyboard = {
-    //     reply_markup: {
-    //       keyboard: [
-    //         [{ text: 'Admin', callback_data: 'admin' }],
-    //         [{ text: 'Course', callback_data: 'course' }],
-    //         [{ text: 'Quiz', callback_data: 'quiz' }],
-    //         [{ text: 'User', callback_data: 'user' }],
-    //         [{ text: 'Feedback', callback_data: 'feedback' }]
-    //       ],
-    //       resize_keyboard: true,
-    //       one_time_keyboard: false,
-    //     },
-    // };
-
-    // try {
-    //     // Example: Send a welcome message
-    //     await bot.sendMessage(chatId, `Welcome back ${msg.chat.username}`, mainMenuKeyboard);
-    // } catch (error) {
-    //     console.error(`⚠️ Failed to send message: ${error.message}`);
-    // }
+   
 
     switch (text) {
       case 'ADMIN':
@@ -284,6 +266,10 @@ module.exports =(bot)=>{
           break;
         }
         
+    }
+
+    if(text === 'STATS'){
+           stats(bot, chatId)
     }
 
     try {
